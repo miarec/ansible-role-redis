@@ -1,14 +1,21 @@
 ---
 
+
+# Check if file is downloaded?
+
+
 # Redis uses a mix of sha1 and sha256 checksums.
 # Determine the type of checksum based on its length and prefix the variable appropriately
 - name: Set checksum | Source install
   set_fact:
     redis_checksum: "{{ 'sha1' if redis_checksums[redis_version]|length == 40 else 'sha256' }}:{{ redis_checksums[redis_version] }}"
   when:
-    - redis_verify_checksum|bool
-    - redis_checksum is not defined
+    - redis_verify_checksum
+    # - redis_checksum is not defined    I think this is if we wnat to specify a specific check supm
     - redis_version in redis_checksums
+
+# verify checksum was by default false, this seems incorrect to me, I changed it to true
+
 
 - name: Download Redis tarball |  Source install
   get_url:
@@ -24,10 +31,95 @@
 #     dest: "{{ redis_download_dir }}/redis-{{ redis_version }}.tar.gz"
 #   when: redis_tarball|default(false)
 
-- name: Extract redis tarball
+- name: Extract redis tarball |  Source install
   unarchive:
     src: "{{ redis_download_dir }}/redis-{{ redis_version }}.tar.gz"
     dest: "{{ redis_download_dir }}"
     creates: "{{ redis_download_dir }}/redis-{{ redis_version }}/Makefile"
     copy: no
   when: not ansible_check_mode
+
+
+  # cleanup download ?, maybe at the end
+
+
+
+# Verify this is needed
+# ---
+# - name: enable overcommit in sysctl
+#   sysctl:
+#     name: vm.overcommit_memory
+#     value: "1"
+#     state: present
+#     reload: yes
+#     ignoreerrors: yes
+#   when: redis_travis_ci is not defined
+
+- name: compile redis
+  # shell: umask 0022 && make -j{{ ansible_processor_cores|default(1) + 1 }}{{ ' 32bit' if redis_make_32bit|bool else '' }}
+  shell: umask 0022 && make -j{{ ansible_processor_cores|default(1) + 1 }}
+  args:
+    chdir: "{{ redis_download_dir }}/redis-{{ redis_version }}"
+    creates: "{{ redis_download_dir }}/redis-{{ redis_version }}/src/redis-server"
+
+# - name: create redis install directory
+#   file:
+#     path: "{{ redis_install_dir }}"
+#     state: directory
+#     mode: 0755
+
+# - name: create /etc/redis
+#   file:
+#     path: /etc/redis
+#     state: directory
+#     mode: 0755
+
+# - name: check if redis user exists (ignore errors)
+#   command: id {{ redis_user }}
+#   ignore_errors: yes
+#   changed_when: false
+#   failed_when: false
+#   register: user_exists
+
+# - name: add redis group
+#   group:
+#     name: "{{ redis_group }}"
+#     state: present
+#   when: user_exists.rc != 0
+
+# - name: add redis user
+#   user:
+#     name: "{{ redis_user }}"
+#     group: "{{ redis_group }}"
+#     comment: "Redis"
+#     home: "{{ redis_install_dir }}"
+#     shell: /bin/false
+#     system: yes
+#   when: user_exists.rc != 0
+
+# - name: create /var/run/redis
+#   file:
+#     path: /var/run/redis
+#     state: directory
+#     owner: "{{ redis_user }}"
+
+# - name: install redis
+#   shell: umask 0022 && make PREFIX={{ redis_install_dir }} install
+#   args:
+#     chdir: "{{ redis_download_dir }}/redis-{{ redis_version }}"
+#     creates: "{{ redis_install_dir }}/bin/redis-server"
+
+# - name: list redis binaries to add to alternatives
+#   command: ls -1 {{ redis_install_dir }}/bin
+#   register: redis_binaries
+#   changed_when: false
+
+# - name: add redis binaries to alternatives
+#   alternatives:
+#     name: "{{ item }}"
+#     path: "{{ redis_install_dir }}/bin/{{ item }}"
+#     link: "/usr/bin/{{ item }}"
+#   with_items: "{{ redis_binaries.stdout_lines }}"
+#   when: redis_binaries is succeeded
+
+

@@ -5,3 +5,9 @@
     - "../vars/{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
     - "../vars/{{ ansible_distribution }}.yml"
     - "../vars/{{ ansible_os_family }}.yml"
+
+- name: Check for Redis Checksum variable.
+  fail:
+    msg: "Redis version {{ redis_version }} is not specified in redis_checksums, either set redis_verify_checksum=false or add checksum value to redis_checksums"
+  when:
+    - redis_version not in redis_checksums and redis_verify_checksum
