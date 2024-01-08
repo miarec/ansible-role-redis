@@ -16,10 +16,10 @@
           changed_when: false
           when: ansible_os_family == "Debian"
 
-    - set_fact:
-        redis_logfile: "/var/log/redis/redis_{{ redis_port }}.log"
+    # - set_fact:
+    #     redis_logfile: "/var/log/redis/redis_{{ redis_port }}.log"
 
   roles:
-    - role: ansible-redis
+    - role: ansible-role-redis
       tags:
         - redis

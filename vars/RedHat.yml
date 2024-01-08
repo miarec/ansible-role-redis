@@ -1,0 +1,5 @@
+---
+# Pacakage install variables
+redis_package_dependencies:
+  - epel-release
+redis_service_name: redis

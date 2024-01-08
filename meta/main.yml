@@ -1,0 +1,21 @@
+---
+galaxy_info:
+  author: miarec
+  description: Deploy Redis from source pr pacakage
+  role_name: redis
+  license: MIT
+  company: MiaRec, Inc.
+  min_ansible_version: 2.7
+  platforms:
+    - name: Ubuntu
+      versions:
+        - focal
+        - jammy
+    - name: EL
+      versions:
+        - 7
+  categories:
+    - database
+    - database:nosql
+
+dependencies: []

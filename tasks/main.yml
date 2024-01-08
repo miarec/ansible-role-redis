@@ -1,0 +1,7 @@
+---
+- include_tasks: preflight.yml
+
+- include_tasks: install-package.yml
+  when: not redis_install_from_source
+
+

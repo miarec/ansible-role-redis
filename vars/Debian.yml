@@ -1,0 +1,4 @@
+---
+# Pacakage install variables
+redis_package_dependencies: []
+redis_service_name: redis-server
