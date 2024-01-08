@@ -4,4 +4,5 @@
 - include_tasks: install-package.yml
   when: not redis_install_from_source
 
-
+- include_tasks: install-source.yml
+  when: redis_install_from_source

@@ -1,5 +1,10 @@
 ---
 
+# Install from Source
+
+redis_verify_checksum: true    # This was false before, seems like we shoudl verify this by default
+redis_download_url: "http://download.redis.io/releases/redis-{{ redis_version }}.tar.gz"
+redis_download_dir: /usr/local/src
 
 
 
@@ -13,10 +18,10 @@ redis_install_dir: "{{ '/opt/redis' if redis_install_from_source else '/usr' }}"
 redis_install_from_source: true
 redis_dir: /var/lib/redis/{{ redis_port }}
 redis_config_file_name: "{% if redis_install_from_source %}{{ redis_port }}.conf{% else %}redis.conf{% endif %}"
-redis_download_url: "http://download.redis.io/releases/redis-{{ redis_version }}.tar.gz"
-redis_download_dir: /usr/local/src
+# redis_download_url: "http://download.redis.io/releases/redis-{{ redis_version }}.tar.gz"
+# redis_download_dir: /usr/local/src
 # Set this to true to validate redis tarball checksum against vars/main.yml
-redis_verify_checksum: false
+# redis_verify_checksum: false
 # Set this value to a local path of a tarball to use for installation instead of downloading
 redis_tarball: false
 # Set this to true to build 32-bit binaries of Redis
