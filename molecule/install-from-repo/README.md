@@ -1,0 +1,19 @@
+# Molecule test this role
+
+Run Molecule test
+```
+molecule test
+```
+
+Run test with variable example
+```
+MOLECULE_DISTRO=centos7 MOLECULE_REDIS_VERSION=5.0.10 molecule test
+```
+
+## Variables
+ - `MOLECULE_DISTRO` OS of docker container to test, default `ubuntu2204`
+    List of tested distros
+    - `ubuntu2204`
+    - `ubuntu2004`
+    - `centos7`
+ - `MOLECULE_REDIS_VERSION` defines variable `redis_version`, default `5.0.10`

@@ -1,0 +1,25 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+
+  pre_tasks:
+    - set_fact:
+        redis_version: "{{ lookup('env', 'REDIS_VERSION') }}"
+
+    - name: Install prerequisites
+      block:
+        - name: Update apt cache
+          apt:
+            update_cache: true
+            cache_valid_time: 600
+          changed_when: false
+          when: ansible_os_family == "Debian"
+
+    - set_fact:
+        redis_logfile: "/var/log/redis/redis_{{ redis_port }}.log"
+
+  roles:
+    - role: ansible-role-redis
+      tags:
+        - redis
