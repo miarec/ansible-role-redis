@@ -5,21 +5,34 @@ redis_install_from_source: true
 # Install from Source
 redis_version: 5.0.10
 
+redis_user: redis
+redis_group: "{{ redis_user }}"
 
 redis_verify_checksum: true    # This was false before, seems like we shoudl verify this by default
-
 redis_download_url: "http://download.redis.io/releases/redis-{{ redis_version }}.tar.gz"
 redis_download_dir: /usr/local/src
 
+# maybe this needed versioning like /opt/redis-5.0.10 for upgrades etc...
+redis_install_dir: /opt/redis
+# redis_install_dir: "{{ '/opt/redis' if redis_install_from_source else '/usr' }}" # I dont know why the if state mentent is here yet
 
 
+# TLS Settings
 
+# Set this to true to build redis with TLS support, available only for versions >= 6 (require OpenSSL development libraries)
+redis_make_tls: false
+# Location of tls certs
+redis_tls_cert: /etc/pki/tls/redis.crt
+redis_tls_key: /etc/pki/tls/redis.key
+redis_tls_ca_cert: /etc/pki/tls/redis-ca.crt
+# If false, clients will not be forced to provide certificate for authentication
+redis_tls_auth_clients: false
 
 # From original
 
 ## Installation options
 # redis_version: 5.0.10
-redis_install_dir: "{{ '/opt/redis' if redis_install_from_source else '/usr' }}"
+# redis_install_dir: "{{ '/opt/redis' if redis_install_from_source else '/usr' }}"
 # redis_install_from_source: true
 redis_dir: /var/lib/redis/{{ redis_port }}
 redis_config_file_name: "{% if redis_install_from_source %}{{ redis_port }}.conf{% else %}redis.conf{% endif %}"
@@ -32,8 +45,8 @@ redis_tarball: false
 # Set this to true to build 32-bit binaries of Redis
 # redis_make_32bit: false
 
-redis_user: redis
-redis_group: "{{ redis_user }}"
+# redis_user: redis
+# redis_group: "{{ redis_user }}"
 
 # The open file limit for Redis/Sentinel
 redis_nofile_limit: 16384

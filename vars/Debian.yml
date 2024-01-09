@@ -1,4 +1,10 @@
 ---
+# Source install variables
+redis_source_dependencies:
+  - gcc
+  - make
+  - libc6-dev
+
 # Pacakage install variables
 redis_package_dependencies: []
 redis_service_name: redis-server
