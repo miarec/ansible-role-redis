@@ -10,8 +10,9 @@
     name: redis
   register: _redis_repo_install
 
-- name: Start and enable Redis service. | Package install
-  service:
-    name: "{{ redis_service_name }}"
-    state: started
-    enabled: true
+# Moving to configure-server.yml after config file has been moved
+# - name: Start and enable Redis service. | Package install
+#   service:
+#     name: "{{ redis_service_name }}"
+#     state: started
+#     enabled: true

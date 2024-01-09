@@ -1,0 +1,45 @@
+[Unit]
+Description=Advanced key-value store
+After=network.target
+Documentation=http://redis.io/documentation, man:redis-server(1)
+
+[Service]
+Type=notify
+ExecStart={{ redis_install_dir }}/bin/redis-server {{ redis_conf_dir }}/{{ redis_config_file_name }} --supervised systemd --daemonize no
+# EnvironmentFile=-/etc/default/{{ redis_service_name }}
+# PIDFile={{ redis_pidfile }}  maybe do not need
+TimeoutStopSec=0
+Restart=always
+User={{ redis_user }}
+Group={{ redis_group }}
+{% if redis_oom_score_adjust != 0 %}
+OOMScoreAdjust={{ redis_oom_score_adjust }}
+{% endif %}
+UMask=007
+PrivateTmp=yes
+LimitNOFILE={{ redis_nofile_limit }}
+PrivateDevices=yes
+ProtectHome=yes
+ReadOnlyDirectories=/
+ReadWriteDirectories=-{{ redis_dir }}
+{% if redis_logfile != '""' %}
+ReadWriteDirectories=-{{ redis_logfile|dirname }}
+{% endif %}
+ReadWriteDirectories=-{{ redis_pidfile|dirname }}
+CapabilityBoundingSet=~CAP_SYS_PTRACE
+{% if ansible_os_family == "Debian" %}
+MemoryDenyWriteExecute=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictRealtime=true
+RestrictNamespaces=true
+{% endif %}
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+# redis-server writes its own config file when in cluster mode so we allow
+# writing there (NB. ProtectSystem=true over ProtectSystem=full)
+ProtectSystem=true
+ReadWriteDirectories=-/etc/redis
+
+[Install]
+WantedBy=multi-user.target

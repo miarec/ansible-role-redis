@@ -33,6 +33,7 @@
     - "{{ redis_install_dir }}"
     - /etc/redis   # This should be a variable
     - /var/run/redis # This should be a variable
+    # - "{{ redis_dir }}" This is done at configure-server.yml
 
 # Download
 
@@ -114,4 +115,25 @@
   with_items: "{{ _redis_binaries.stdout_lines }}"
   when: _redis_binaries is succeeded
 
+# Setup SystemD service
+- name: Create Redis Systemd service | Source Install
+  template:
+    src: redis-server.service.j2
+    dest: /etc/systemd/system/{{ redis_service_name }}.service
+    mode: 0644
+  # with_first_found:
+  #   - files:
+  #     - "{{ ansible_os_family }}/redis.service.j2"
+  #     - default/redis.service.j2
+  #     paths:
+  #       - ../templates
+  # register: redis_unit_file
+  # when: redis_as_service and ansible_service_mgr|default() == "systemd" and not (not redis_install_from_source and redis_service_name == 'redis')
 
+
+# Moving this to configure after config file exists
+# - name: Start and enable Redis service. | Package install
+#   service:
+#     name: "{{ redis_service_name }}"
+#     state: started
+#     enabled: true

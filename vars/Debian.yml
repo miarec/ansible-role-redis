@@ -8,3 +8,6 @@ redis_source_dependencies:
 # Pacakage install variables
 redis_package_dependencies: []
 redis_service_name: redis-server
+
+# Configure variables
+redis_conf_dir: /etc/redis
