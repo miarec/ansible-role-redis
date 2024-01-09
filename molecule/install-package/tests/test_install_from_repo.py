@@ -10,12 +10,14 @@ def test_directories(host):
         dirs = [
             "/etc/redis",
             "/var/run/redis",
-            "/var/log/redis"
+            "/var/log/redis",
+            "/var/lib/redis"
         ]
     if host.system_info.distribution == "centos":
         dirs = [
             "/var/run/redis",
-            "/var/log/redis"
+            "/var/log/redis",
+            "/var/lib/redis"
         ]
     for dir in dirs:
         d = host.file(dir)
@@ -27,14 +29,12 @@ def test_files(host):
     if host.system_info.distribution == "ubuntu":
         files = [
             "/etc/redis/redis.conf",
-            "/var/run/redis/redis-server.pid",
-            "/var/log/redis/redis_6379.log"
+            "/var/log/redis/redis.log"
         ]
     if host.system_info.distribution == "centos":
         files = [
             "/etc/redis.conf",
-            "/var/run/redis/redis.pid",
-            "/var/log/redis/redis_6379.log"
+            "/var/log/redis/redis.log"
         ]
 
     for file in files:

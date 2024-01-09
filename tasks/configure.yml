@@ -124,6 +124,7 @@
     mode: 0640
   notify: "restart redis"
 
+# This is redundant, everything in env file is also set in config file
 # - name: add redis init config file
 #   template:
 #     dest: /etc/sysconfig/{{ redis_service_name }}

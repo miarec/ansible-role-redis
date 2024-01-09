@@ -19,8 +19,8 @@ redis_install_dir: /opt/redis
 
 redis_config_file_name: redis.conf   # Im going to try an use the same file for source and package install
 # redis_config_file_name: "{% if redis_install_from_source %}{{ redis_port }}.conf{% else %}redis.conf{% endif %}"
-redis_pidfile: /var/run/redis/{{ redis_service_name }}.pid   # I think this is not needed, but it is in packa system d file
-redis_logfile: /var/log/redis/redis-server.log
+# redis_pidfile: /var/run/redis/{{ redis_service_name }}.pid   # I think this is not needed, but it is in packa system d file
+redis_logfile: /var/log/redis/redis.log
 
 
 
@@ -121,7 +121,7 @@ redis_hz: 10
 # Set this to true to validate redis tarball checksum against vars/main.yml
 # redis_verify_checksum: false
 # Set this value to a local path of a tarball to use for installation instead of downloading
-redis_tarball: false
+# redis_tarball: false
 # Set this to true to build 32-bit binaries of Redis
 # redis_make_32bit: false
 
@@ -136,9 +136,9 @@ redis_tarball: false
 # Configure Redis as a service
 # This creates the init scripts for Redis and ensures the process is running
 # Also applies for Redis Sentinel
-redis_as_service: true
+# redis_as_service: true
 # Add local facts to /etc/ansible/facts.d for Redis
-redis_local_facts: true
+# redis_local_facts: true
 # Service name
 # redis_service_name: "{{ 'redis_{{ redis_port }}' if redis_install_from_source else 'redis-server' }}"
 
@@ -221,23 +221,23 @@ redis_local_facts: true
 
 ## Redis sentinel configs
 # Set this to true on a host to configure it as a Sentinel
-redis_sentinel: false
-redis_sentinel_dir: /var/lib/redis/sentinel_{{ redis_sentinel_port }}
-redis_sentinel_bind: 0.0.0.0
-redis_sentinel_port: 26379
-redis_sentinel_password: false
-redis_sentinel_pidfile: /var/run/redis/sentinel_{{ redis_sentinel_port }}.pid
-redis_sentinel_logfile: '""'
-redis_sentinel_syslog_ident: sentinel_{{ redis_sentinel_port }}
-redis_sentinel_oom_score_adjust: 0
-redis_sentinel_monitors:
-  - name: master01
-    host: localhost
-    port: 6379
-    quorum: 2
-    auth_pass: ant1r3z
-    down_after_milliseconds: 30000
-    parallel_syncs: 1
-    failover_timeout: 180000
-    notification_script: false
-    client_reconfig_script: false
+# redis_sentinel: false
+# redis_sentinel_dir: /var/lib/redis/sentinel_{{ redis_sentinel_port }}
+# redis_sentinel_bind: 0.0.0.0
+# redis_sentinel_port: 26379
+# redis_sentinel_password: false
+# redis_sentinel_pidfile: /var/run/redis/sentinel_{{ redis_sentinel_port }}.pid
+# redis_sentinel_logfile: '""'
+# redis_sentinel_syslog_ident: sentinel_{{ redis_sentinel_port }}
+# redis_sentinel_oom_score_adjust: 0
+# redis_sentinel_monitors:
+#   - name: master01
+#     host: localhost
+#     port: 6379
+#     quorum: 2
+#     auth_pass: ant1r3z
+#     down_after_milliseconds: 30000
+#     parallel_syncs: 1
+#     failover_timeout: 180000
+#     notification_script: false
+#     client_reconfig_script: false
