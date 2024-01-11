@@ -20,7 +20,7 @@
     comment: "Redis"
     home: "{{ redis_install_dir }}"
     shell: /bin/false
-    system: yes
+    system: true
   when: redis_user != "root"
 
 - name: Create Redis Install directory | Source install
@@ -33,7 +33,8 @@
 # Download and Extract Source files
 
 # Redis uses a mix of sha1 and sha256 checksums.
-# Determine the type of checksum based on its length and prefix the variable appropriately
+# Determine the type of checksum based on
+# its length and prefix the variable appropriately
 - name: Set checksum | Source install
   set_fact:
     redis_checksum: "{{ 'sha1' if redis_checksums[redis_version]|length == 40 else 'sha256' }}:{{ redis_checksums[redis_version] }}"
@@ -52,7 +53,7 @@
     src: "{{ redis_download_dir }}/redis-{{ redis_version }}.tar.gz"
     dest: "{{ redis_download_dir }}"
     creates: "{{ redis_download_dir }}/redis-{{ redis_version }}/Makefile"
-    copy: no
+    copy: false
 
 # Compile and install Redis
 - name: Enable overcommit in sysctl | Source Install
@@ -60,8 +61,8 @@
     name: vm.overcommit_memory
     value: "1"
     state: present
-    reload: yes
-    ignoreerrors: yes
+    reload: true
+    ignoreerrors: true
 
 - name: Compile Redis | Source install
   shell: umask 0022 && make -j{{ ansible_processor_cores|default(1) + 1 }}{{ ' BUILD_TLS=yes' if redis_make_tls|bool else '' }}
