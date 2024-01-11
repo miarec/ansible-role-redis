@@ -41,30 +41,37 @@ redis_make_tls: false
 redis_tls_cert: /etc/pki/tls/redis.crt
 redis_tls_key: /etc/pki/tls/redis.key
 redis_tls_ca_cert: /etc/pki/tls/redis-ca.crt
-redis_tls_auth_clients: false  # If false, clients will not be forced to provide certificate for authentication
+redis_tls_auth_clients: false
+# If false, clients will not be forced to provide certificate for authentication
 
 # Logging
 redis_loglevel: notice
 redis_syslog_enabled: "yes"
 redis_syslog_ident: "{{ redis_service_name }}"
-redis_syslog_facility: USER  # Syslog facility. Must be USER or LOCAL0-LOCAL7
+redis_syslog_facility: USER
+# Syslog facility. Must be USER or LOCAL0-LOCAL7
 
 # Snapshotting
-# How frequently to snapshot the database to disk
-# e.g. "900 1" => 900 seconds if at least 1 key changed
+
 redis_save:
   - 900 1
   - 300 10
   - 60 10000
+# How frequently to snapshot the database to disk
+# e.g. "900 1" => 900 seconds if at least 1 key changed
+
 redis_stop_writes_on_bgsave_error: "yes"
 redis_rdbcompression: "yes"
 redis_rdbchecksum: "yes"
 
-redis_db_filename: "dump.rdb"  # the file name for the RDB Backup
+redis_db_filename: "dump.rdb"
+# the file name for the RDB Backup
 
 ## Replication options
-redis_slaveof: false  # Set slaveof just as you would in redis.conf. (e.g. "redis01 6379")
-redis_slave_read_only: "yes" # Make slaves read-only. "yes" or "no"
+redis_slaveof: false
+# Set slaveof just as you would in redis.conf. (e.g. "redis01 6379")
+redis_slave_read_only: "yes"
+# Make slaves read-only. "yes" or "no"
 redis_slave_priority: 100
 redis_repl_backlog_size: false
 redis_min_slaves_to_write: 0
@@ -76,7 +83,8 @@ redis_rename_commands: []
 # Limits
 redis_maxclients: 10000
 redis_timeout: 3600
-redis_maxmemory: false  # Redis memory limit (e.g. 4294967296, 4096mb, 4gb)
+redis_maxmemory: false
+# Redis memory limit (e.g. 4294967296, 4096mb, 4gb)
 redis_maxmemory_policy: noeviction
 
 # Append Only Mode
@@ -91,8 +99,10 @@ redis_auto_aof_rewrite_min_size: "64mb"
 redis_lua_time_limit: 5000
 
 # Slow Log
-redis_slowlog_log_slower_than: 10000  # Log queries slower than this many milliseconds. -1 to disable
-redis_slowlog_max_len: 128  # Maximum number of slow queries to save
+redis_slowlog_log_slower_than: 10000
+# Log queries slower than this many milliseconds. -1 to disable
+redis_slowlog_max_len: 128
+# Maximum number of slow queries to save
 
 # Event Notification
 redis_notify_keyspace_events: '""'

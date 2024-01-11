@@ -27,7 +27,7 @@
 
 - name: Check Redis version when TLS is enabled
   fail:
-    msg: "When Redis version 6.0.0 is required for TLS support"
+    msg: "When Redis version 6.x.x or higher is required for TLS support"
   when:
     - _redis_major_version|int < 6
     - redis_make_tls
