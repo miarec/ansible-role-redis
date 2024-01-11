@@ -1,9 +1,7 @@
 {{ ansible_managed | comment }}
 
 # General
-
 daemonize no
-
 dir {{ redis_dir }}
 {% if redis_make_tls|bool %}
 port 0

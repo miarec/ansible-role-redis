@@ -4,22 +4,28 @@ import testinfra.utils.ansible_runner
 testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
     os.environ['MOLECULE_INVENTORY_FILE']).get_hosts('all')
 
+redis_version = os.environ.get('REDIS_VERSION')
+
 def test_directories(host):
-    if host.system_info.distribution == "ubuntu":
-        dirs = [
-            "/etc/redis",
-            "/var/run/redis",
-            "/var/log/redis",
-            "/var/lib/redis",
-            "/opt/redis"
-        ]
-    if host.system_info.distribution == "centos":
-        dirs = [
-            "/var/run/redis",
-            "/var/log/redis",
-            "/var/lib/redis",
-            "/opt/redis"
-        ]
+    dirs = [
+        "/var/log/redis",
+        "/opt/redis-{}".format(redis_version),
+        "/opt/redis-{}/data".format(redis_version)
+    ]
+
+    # if host.system_info.distribution == "ubuntu":
+    #     dirs = [
+    #         "/etc/redis",
+    #         "/var/log/redis",
+    #         "/var/lib/redis",
+    #         "/opt/redis-{}".format(redis_version)
+    #     ]
+    # if host.system_info.distribution == "centos":
+    #     dirs = [
+    #         "/var/log/redis",
+    #         "/var/lib/redis",
+    #         "/opt/redis-{}".format(redis_version)
+    #     ]
 
     for dir in dirs:
         d = host.file(dir)
@@ -27,16 +33,21 @@ def test_directories(host):
         assert d.exists
 
 def test_files(host):
-    if host.system_info.distribution == "ubuntu":
-        files = [
-            "/etc/redis/redis.conf",
-            "/var/log/redis/redis.log"
-        ]
-    if host.system_info.distribution == "centos":
-        files = [
-            "/etc/redis.conf",
-            "/var/log/redis/redis.log"
-        ]
+
+    files = [
+    "/opt/redis-{}/redis.conf".format(redis_version),
+    "/var/log/redis/redis.log"
+    ]
+    # if host.system_info.distribution == "ubuntu":
+    #     files = [
+    #         "/opt/redis-{}/redis.conf".format(redis_version),
+    #         "/var/log/redis/redis.log"
+    #     ]
+    # if host.system_info.distribution == "centos":
+    #     files = [
+    #         "/opt/redis-{}/redis.conf".format(redis_version),
+    #         "/var/log/redis/redis.log"
+    #     ]
 
     for file in files:
         f = host.file(file)

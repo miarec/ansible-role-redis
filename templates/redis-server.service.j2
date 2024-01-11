@@ -5,9 +5,7 @@ Documentation=http://redis.io/documentation, man:redis-server(1)
 
 [Service]
 Type=notify
-ExecStart={{ redis_install_dir }}/bin/redis-server {{ redis_conf_dir }}/{{ redis_config_file_name }} --supervised systemd --daemonize no
-# EnvironmentFile=-/etc/default/{{ redis_service_name }}
-
+ExecStart={{ redis_install_dir }}/bin/redis-server {{ redis_config_file_name }} --supervised systemd --daemonize no
 TimeoutStopSec=0
 Restart=always
 User={{ redis_user }}
@@ -23,7 +21,6 @@ ProtectHome=yes
 ReadOnlyDirectories=/
 ReadWriteDirectories=-{{ redis_dir }}
 ReadWriteDirectories=-{{ redis_logfile|dirname }}
-
 CapabilityBoundingSet=~CAP_SYS_PTRACE
 {% if ansible_os_family == "Debian" %}
 MemoryDenyWriteExecute=true

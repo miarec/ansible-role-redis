@@ -1,10 +1,22 @@
 ---
+# Set OS Specific variables and execute variable checks
 - include_tasks: preflight.yml
 
+# Install Redis from Package
 - include_tasks: install-package.yml
   when: not redis_install_from_source
 
-- include_tasks: install-source.yml
+# Download and Compile Redis from Source
+- name: Check if Redis {{ redis_version }} is installed.
+  shell: redis-server --version | sed -n 's/.*v=\([0-9.]*\).*/\1/p'
+  failed_when: false
+  changed_when: false
+  register: _redis_version
   when: redis_install_from_source
+
+- include_tasks: install-source.yml
+  when:
+    - redis_install_from_source
+    - _redis_version.stdout != redis_version
 
 - include_tasks: configure.yml

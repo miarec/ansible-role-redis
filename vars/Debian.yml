@@ -1,13 +1,13 @@
 ---
-# Source install variables
+# OS Specific variables
+
+## Source install variables
 redis_source_dependencies:
   - gcc
   - make
   - libc6-dev
 
-# Pacakage install variables
+## Pacakage install variables
 redis_package_dependencies: []
 redis_service_name: redis-server
-
-# Configure variables
-redis_conf_dir: /etc/redis
+redis_package_conf_file_name: /etc/redis/redis.conf

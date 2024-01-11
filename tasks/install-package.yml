@@ -1,5 +1,5 @@
 ---
-- name: Install dependencies for Redis. | Package install
+- name: Install package dependencies for Redis | Package install
   package:
     name: "{{ item }}"
     state: present
@@ -9,10 +9,3 @@
   package:
     name: redis
   register: _redis_repo_install
-
-# Moving to configure-server.yml after config file has been moved
-# - name: Start and enable Redis service. | Package install
-#   service:
-#     name: "{{ redis_service_name }}"
-#     state: started
-#     enabled: true

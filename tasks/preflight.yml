@@ -11,3 +11,11 @@
     msg: "Redis version {{ redis_version }} is not specified in redis_checksums, either set redis_verify_checksum=false or add checksum value to redis_checksums"
   when:
     - redis_version not in redis_checksums and redis_verify_checksum
+    - redis_install_from_source
+
+- name: Check for SystemD when installing from source.
+  fail:
+    msg: "This role only supports installing from sourec on systemd systems"
+  when:
+    - ansible_service_mgr != "systemd"
+    - redis_install_from_source
