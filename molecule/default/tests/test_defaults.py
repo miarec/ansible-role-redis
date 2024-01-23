@@ -9,8 +9,8 @@ redis_version = os.environ.get('REDIS_VERSION')
 def test_directories(host):
     dirs = [
         "/var/log/redis",
-        "/opt/redis-{}".format(redis_version),
-        "/opt/redis-{}/data".format(redis_version)
+        "/opt/redis",
+        "/opt/redis/data"
     ]
 
     # if host.system_info.distribution == "ubuntu":
@@ -35,7 +35,7 @@ def test_directories(host):
 def test_files(host):
 
     files = [
-    "/opt/redis-{}/redis.conf".format(redis_version),
+    "/opt/redis/redis.conf",
     "/var/log/redis/redis.log"
     ]
     # if host.system_info.distribution == "ubuntu":

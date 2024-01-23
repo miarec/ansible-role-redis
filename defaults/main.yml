@@ -1,6 +1,9 @@
 ---
 redis_install_from_source: true
 
+# If true, the redis will be installed and configured again even if it's found on the system.
+redis_force_install: false
+
 # Install from Source
 redis_version: 5.0.10
 
@@ -12,7 +15,7 @@ redis_download_url: "http://download.redis.io/releases/redis-{{ redis_version }}
 redis_download_dir: /tmp
 redis_cleanup_downloads: true
 
-redis_install_dir: /opt/redis-{{ redis_version }}
+redis_install_dir: /opt/redis
 redis_config_file_name: "{{ redis_install_dir }}/redis.conf"
 redis_logfile: /var/log/redis/redis.log
 

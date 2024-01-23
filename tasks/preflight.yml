@@ -6,6 +6,7 @@
     - "../vars/{{ ansible_distribution }}.yml"
     - "../vars/{{ ansible_os_family }}.yml"
 
+# Check for Variables
 - name: Check for Redis Checksum variable.
   fail:
     msg:
@@ -13,13 +14,6 @@
       - "Set 'redis_verify_checksum=false' or add checksum value to vars.main.yml"
   when:
     - redis_version not in redis_checksums and redis_verify_checksum
-    - redis_install_from_source
-
-- name: Check for SystemD when installing from source.
-  fail:
-    msg: "This role only supports installing from source on systemd systems"
-  when:
-    - ansible_service_mgr != "systemd"
     - redis_install_from_source
 
 - set_fact:
@@ -32,3 +26,17 @@
     - _redis_major_version|int < 6
     - redis_make_tls
     - redis_install_from_source
+
+# Check Host compatibility
+- name: Check for SystemD when installing from source.
+  fail:
+    msg: "This role only supports installing from source on systemd systems"
+  when:
+    - ansible_service_mgr != "systemd"
+    - redis_install_from_source
+
+- name: Check if Redis is installed.
+  shell: which redis-server
+  failed_when: false
+  changed_when: false
+  register: _installed_redis
