@@ -1,6 +1,6 @@
 ---
-# Include OS specific vars
-- include_vars: "{{ item }}"
+- name: Include OS specific vars.
+  include_vars: "{{ item }}"
   with_first_found:
     - "../vars/{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
     - "../vars/{{ ansible_distribution }}.yml"
@@ -16,7 +16,8 @@
     - redis_version not in redis_checksums and redis_verify_checksum
     - redis_install_from_source
 
-- set_fact:
+- name: Set Redis major version
+  set_fact:
     _redis_major_version: "{{ redis_version.split('.')[0] }}"
 
 - name: Check Redis version when TLS is enabled
@@ -36,7 +37,7 @@
     - redis_install_from_source
 
 - name: Check if Redis is installed.
-  shell: which redis-server
+  command: which redis-server
   failed_when: false
   changed_when: false
   register: _installed_redis

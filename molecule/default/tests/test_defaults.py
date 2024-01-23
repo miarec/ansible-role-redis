@@ -13,20 +13,6 @@ def test_directories(host):
         "/opt/redis/data"
     ]
 
-    # if host.system_info.distribution == "ubuntu":
-    #     dirs = [
-    #         "/etc/redis",
-    #         "/var/log/redis",
-    #         "/var/lib/redis",
-    #         "/opt/redis-{}".format(redis_version)
-    #     ]
-    # if host.system_info.distribution == "centos":
-    #     dirs = [
-    #         "/var/log/redis",
-    #         "/var/lib/redis",
-    #         "/opt/redis-{}".format(redis_version)
-    #     ]
-
     for dir in dirs:
         d = host.file(dir)
         assert d.is_directory
@@ -38,16 +24,6 @@ def test_files(host):
     "/opt/redis/redis.conf",
     "/var/log/redis/redis.log"
     ]
-    # if host.system_info.distribution == "ubuntu":
-    #     files = [
-    #         "/opt/redis-{}/redis.conf".format(redis_version),
-    #         "/var/log/redis/redis.log"
-    #     ]
-    # if host.system_info.distribution == "centos":
-    #     files = [
-    #         "/opt/redis-{}/redis.conf".format(redis_version),
-    #         "/var/log/redis/redis.log"
-    #     ]
 
     for file in files:
         f = host.file(file)

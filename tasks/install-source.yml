@@ -37,7 +37,7 @@
 # its length and prefix the variable appropriately
 - name: Set checksum | Source install
   set_fact:
-    redis_checksum: "{{ 'sha1' if redis_checksums[redis_version]|length == 40 else 'sha256' }}:{{ redis_checksums[redis_version] }}"
+    redis_checksum: "{{ 'sha1' if redis_checksums[redis_version] | length == 40 else 'sha256' }}:{{ redis_checksums[redis_version] }}"
   when:
     - redis_verify_checksum
     - redis_version in redis_checksums
@@ -46,7 +46,8 @@
   get_url:
     url: "{{ redis_download_url }}"
     dest: "{{ redis_download_dir }}/redis-{{ redis_version }}.tar.gz"
-    checksum: "{{ redis_checksum|default(omit) }}"
+    mode: 0600
+    checksum: "{{ redis_checksum | default(omit) }}"
 
 - name: Extract redis tarball | Source install
   unarchive:
@@ -65,7 +66,7 @@
     ignoreerrors: true
 
 - name: Compile Redis | Source install
-  shell: umask 0022 && make -j{{ ansible_processor_cores|default(1) + 1 }}{{ ' BUILD_TLS=yes' if redis_make_tls|bool else '' }}
+  shell: umask 0022 && make -j{{ ansible_processor_cores | default(1) + 1 }}{{ ' BUILD_TLS=yes' if redis_make_tls | bool else '' }}
   args:
     chdir: "{{ redis_download_dir }}/redis-{{ redis_version }}"
     creates: "{{ redis_download_dir }}/redis-{{ redis_version }}/src/redis-server"

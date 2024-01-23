@@ -6,7 +6,7 @@ redis_source_dependencies:
   - gcc
   - make
   # This should be `else omit`, but that doesn't quite work, so duplicate gcc
-  - "{{ 'openssl-devel' if redis_make_tls|bool else 'gcc' }}"
+  - "{{ 'openssl-devel' if redis_make_tls | bool else 'gcc' }}"
 
 ## Pacakage install variables
 redis_package_dependencies:

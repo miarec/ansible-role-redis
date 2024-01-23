@@ -1,6 +1,6 @@
 ---
-# Change file location, when redis was installed from pacakge
-- set_fact:
+- name: Change file location, when redis was installed from pacakge.
+  set_fact:
     redis_config_file_name: "{{ redis_package_conf_file_name }}"
     redis_dir: /var/lib/redis
   when: not redis_install_from_source
@@ -11,6 +11,7 @@
     path: "{{ item }}"
     owner: "{{ redis_user }}"
     group: "{{ redis_group }}"
+    mode: 0640
   with_items:
     - "{{ redis_logfile | dirname }}"
     - "{{ redis_dir }}"
@@ -22,7 +23,7 @@
     owner: "{{ redis_user }}"
     group: "{{ redis_group }}"
     mode: 0640
-  notify: "restart redis"
+  notify: Restart Redis
 
 - name: Start and enable Redis service. | Configure Redis
   service:
