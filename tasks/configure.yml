@@ -11,7 +11,7 @@
     path: "{{ item }}"
     owner: "{{ redis_user }}"
     group: "{{ redis_group }}"
-    mode: 0640
+    mode: 0740
   with_items:
     - "{{ redis_logfile | dirname }}"
     - "{{ redis_dir }}"
