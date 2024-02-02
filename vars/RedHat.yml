@@ -1,0 +1,16 @@
+---
+# OS Specific variables
+
+## Source install variables
+redis_source_dependencies:
+  - gcc
+  - make
+  # This should be `else omit`, but that doesn't quite work, so duplicate gcc
+  - "{{ 'openssl-devel' if redis_make_tls | bool else 'gcc' }}"
+
+## Pacakage install variables
+redis_package_dependencies:
+  - epel-release
+# redis_service_name: redis
+redis_service_name: "{% if redis_install_from_source %}redis_{{ redis_port }}{% else %}redis{% endif %}"
+redis_package_conf_file_name: /etc/redis.conf

@@ -1,0 +1,113 @@
+---
+# Prepare host for installation
+- name: Install source dependencies for Redis. | Source install
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ redis_source_dependencies }}"
+
+- name: Add Redis group | Source install
+  group:
+    name: "{{ redis_group }}"
+    state: present
+    system: true
+  when: redis_group != "root"
+
+- name: Add Redis user | Source install
+  user:
+    name: "{{ redis_user }}"
+    group: "{{ redis_group }}"
+    comment: "Redis"
+    home: "{{ redis_install_dir }}"
+    shell: /bin/false
+    system: true
+  when: redis_user != "root"
+
+- name: Create Redis Install directory | Source install
+  file:
+    path: "{{ redis_install_dir }}"
+    state: directory
+    mode: 0755
+    owner: "{{ redis_user }}"
+
+# Download and Extract Source files
+
+# Redis uses a mix of sha1 and sha256 checksums.
+# Determine the type of checksum based on
+# its length and prefix the variable appropriately
+- name: Set checksum | Source install
+  set_fact:
+    redis_checksum: "{{ 'sha1' if redis_checksums[redis_version] | length == 40 else 'sha256' }}:{{ redis_checksums[redis_version] }}"
+  when:
+    - redis_verify_checksum
+    - redis_version in redis_checksums
+
+- name: Download Redis tarball | Source install
+  get_url:
+    url: "{{ redis_download_url }}"
+    dest: "{{ redis_download_dir }}/redis-{{ redis_version }}.tar.gz"
+    mode: 0600
+    checksum: "{{ redis_checksum | default(omit) }}"
+
+- name: Extract redis tarball | Source install
+  unarchive:
+    src: "{{ redis_download_dir }}/redis-{{ redis_version }}.tar.gz"
+    dest: "{{ redis_download_dir }}"
+    creates: "{{ redis_download_dir }}/redis-{{ redis_version }}/Makefile"
+    copy: false
+
+# Compile and install Redis
+- name: Enable overcommit in sysctl | Source Install
+  sysctl:
+    name: vm.overcommit_memory
+    value: "1"
+    state: present
+    reload: true
+    ignoreerrors: true
+
+- name: Compile Redis | Source install
+  shell: umask 0022 && make -j{{ ansible_processor_cores | default(1) + 1 }}{{ ' BUILD_TLS=yes' if redis_make_tls | bool else '' }}
+  args:
+    chdir: "{{ redis_download_dir }}/redis-{{ redis_version }}"
+    creates: "{{ redis_download_dir }}/redis-{{ redis_version }}/src/redis-server"
+
+- name: Install Redis | Source install
+  shell: umask 0022 && make PREFIX={{ redis_install_dir }} install
+  args:
+    chdir: "{{ redis_download_dir }}/redis-{{ redis_version }}"
+
+- name: Register Redis binaries | Source install
+  command: ls -1 {{ redis_install_dir }}/bin
+  register: _redis_binaries
+  changed_when: false
+
+- name: Add Redis binaries to alternatives | Source install
+  alternatives:
+    name: "{{ item }}"
+    path: "{{ redis_install_dir }}/bin/{{ item }}"
+    link: "/usr/bin/{{ item }}"
+  with_items: "{{ _redis_binaries.stdout_lines }}"
+
+# Setup SystemD service
+- name: Create Redis Systemd service | Source Install
+  template:
+    src: redis-server.service.j2
+    dest: /etc/systemd/system/{{ redis_service_name }}.service
+    mode: 0644
+  register: _systemd_service
+
+- name: Update systemd | Source Install
+  command: systemctl daemon-reload
+  become: true
+  when: _systemd_service.changed
+
+# Cleanup Source Files
+- name: Clean up the source files | Source Install
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ redis_download_dir }}/redis-{{ redis_version }}"
+    - "{{ redis_download_dir }}/redis-{{ redis_version }}.tar.gz"
+  when: redis_cleanup_downloads|bool
+  become: true

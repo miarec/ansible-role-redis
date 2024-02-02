@@ -1,0 +1,14 @@
+---
+# OS Specific variables
+
+## Source install variables
+redis_source_dependencies:
+  - gcc
+  - make
+  - libc6-dev
+
+## Pacakage install variables
+redis_package_dependencies: []
+# redis_service_name: redis-server
+redis_service_name: "{% if redis_install_from_source %}redis_{{ redis_port }}{% else %}redis-server{% endif %}"
+redis_package_conf_file_name: /etc/redis/redis.conf

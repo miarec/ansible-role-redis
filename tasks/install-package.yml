@@ -1,0 +1,43 @@
+---
+- name: Install package dependencies for Redis | Package install
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ redis_package_dependencies }}"
+
+- name: Install Redis | Package install
+  package:
+    name: redis
+  register: _redis_repo_install
+
+
+# On Ubuntu 20.04 package install does not start systemd service
+# the service type is set to "forking"
+# and --supervised systemd is not supplied on Exec start
+# change the type to "notify".
+# On Ubuntu 22.04, redis is configured with the correct type "notify"
+
+- name: Add SystemD override | Package install | Ubuntu 20.04
+  block:
+
+  - name: Create override directory | Package install | Ubuntu 20.04
+    file:
+      state: directory
+      path: /etc/systemd/system/redis-server.service.d/
+      owner: "{{ redis_user }}"
+      group: "{{ redis_group }}"
+      mode: 0740
+
+  - name: Add Override file | Package install | Ubuntu 20.04
+    copy:
+      dest: /etc/systemd/system/redis-server.service.d/override.conf
+      content: |
+          [Service]
+          Type=notify
+    register: _systemd_override
+
+  - name: Reload systemd | Package install | Ubuntu 20.04
+    command: systemctl daemon-reload
+    when: _systemd_override.changed
+
+  when: ansible_distribution_version == "20.04"

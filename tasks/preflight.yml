@@ -1,0 +1,43 @@
+---
+- name: Include OS specific vars.
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "../vars/{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
+    - "../vars/{{ ansible_distribution }}.yml"
+    - "../vars/{{ ansible_os_family }}.yml"
+
+# Check for Variables
+- name: Check for Redis Checksum variable.
+  fail:
+    msg:
+      - "Redis version {{ redis_version }} is not specified in redis_checksums,"
+      - "Set 'redis_verify_checksum=false' or add checksum value to vars.main.yml"
+  when:
+    - redis_version not in redis_checksums and redis_verify_checksum
+    - redis_install_from_source
+
+- name: Set Redis major version
+  set_fact:
+    _redis_major_version: "{{ redis_version.split('.')[0] }}"
+
+- name: Check Redis version when TLS is enabled
+  fail:
+    msg: "When Redis version 6.x.x or higher is required for TLS support"
+  when:
+    - _redis_major_version|int < 6
+    - redis_make_tls
+    - redis_install_from_source
+
+# Check Host compatibility
+- name: Check for SystemD when installing from source.
+  fail:
+    msg: "This role only supports installing from source on systemd systems"
+  when:
+    - ansible_service_mgr != "systemd"
+    - redis_install_from_source
+
+- name: Check if Redis is installed.
+  command: which redis-server
+  failed_when: false
+  changed_when: false
+  register: _installed_redis

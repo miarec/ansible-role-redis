@@ -1,0 +1,20 @@
+---
+- name: Set OS Specific variables and execute variable checks
+  include_tasks: preflight.yml
+
+- name: Install Redis from package.
+  include_tasks: install-package.yml
+  when:
+    - not redis_install_from_source
+    - _installed_redis.rc != 0 or redis_force_install|bool
+
+- name: Install from source Redis {{ redis_version }}
+  include_tasks: install-source.yml
+  when:
+    - redis_install_from_source
+    - _installed_redis.rc != 0 or redis_force_install|bool
+
+- name: Configure Redis.
+  include_tasks: configure.yml
+  when:
+    - _installed_redis.rc != 0 or redis_force_install|bool
