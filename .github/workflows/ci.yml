@@ -83,7 +83,7 @@ jobs:
         run: ansible-galaxy collection install community.docker ansible.posix --force
 
       - name: Run molecule tests
-        run: molecule test -s install-from-repo
+        run: molecule test -s install-package
         env:
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
