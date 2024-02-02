@@ -1,6 +1,7 @@
 {{ ansible_managed | comment }}
 
 # General
+supervised systemd
 daemonize no
 dir {{ redis_dir }}
 {% if redis_make_tls|bool %}
