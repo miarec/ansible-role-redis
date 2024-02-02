@@ -75,7 +75,6 @@
   shell: umask 0022 && make PREFIX={{ redis_install_dir }} install
   args:
     chdir: "{{ redis_download_dir }}/redis-{{ redis_version }}"
-    creates: "{{ redis_install_dir }}/bin/redis-server"
 
 - name: Register Redis binaries | Source install
   command: ls -1 {{ redis_install_dir }}/bin
@@ -95,6 +94,12 @@
     src: redis-server.service.j2
     dest: /etc/systemd/system/{{ redis_service_name }}.service
     mode: 0644
+  register: _systemd_service
+
+- name: Update systemd | Source Install
+  command: systemctl daemon-reload
+  become: true
+  when: _systemd_service.changed
 
 # Cleanup Source Files
 - name: Clean up the source files | Source Install

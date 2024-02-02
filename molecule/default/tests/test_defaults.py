@@ -31,10 +31,12 @@ def test_files(host):
         assert f.is_file
 
 def test_service(host):
-    if host.system_info.distribution == "ubuntu":
-        s = host.service("redis-server")
-    if host.system_info.distribution == "centos":
-        s = host.service("redis")
+    # if host.system_info.distribution == "ubuntu":
+    #     s = host.service("redis-server")
+    # if host.system_info.distribution == "centos":
+    #     s = host.service("redis")
+
+    s = host.service("redis_6379")
 
     assert s.is_enabled
     assert s.is_running
