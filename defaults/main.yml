@@ -2,7 +2,7 @@
 redis_install_from_source: true
 
 # If true, the redis will be installed and configured again even if it's found on the system.
-redis_force_install: true
+redis_force_install: false
 
 # Install from Source
 redis_version: 5.0.10
