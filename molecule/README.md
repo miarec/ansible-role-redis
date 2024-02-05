@@ -19,6 +19,11 @@ MOLECULE_DISTRO=centos7 MOLECULE_REDIS_VERSION=6.2.13 molecule test
     - `ubuntu2204`
     - `ubuntu2004`
     - `centos7`
+    - `rockylinux8`
+    - `rockylinux9`
+    - `rhel7`
+    - `rhel8`
+    - `rhel9`
  - `MOLECULE_REDIS_VERSION` defines variable `redis_version`, default `5.0.10`
 
 

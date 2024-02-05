@@ -8,7 +8,7 @@
     - not redis_install_from_source
     - _installed_redis.rc != 0 or redis_force_install|bool
 
-- name: Install from source Redis {{ redis_version }}
+- name: Install from Redis from source.
   include_tasks: install-source.yml
   when:
     - redis_install_from_source

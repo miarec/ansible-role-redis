@@ -1,14 +1,11 @@
 ---
-# epel-release install shoudl be reviewed,   i dont like this
-# epel may not be needed on rocky 8 or 9
-- name: Install package dependencies for Redis | Package install
+- name: Install EPEL | Package install | CentOS 7
   package:
-    name: "{{ item }}"
+    name: epel-release
     state: present
-  with_items: "{{ redis_package_dependencies }}"
-  when: ansible_distribution != "RedHat"
+  when: ansible_distribution == "CentOS"
 
-- name: Install EPEL | RHEL7
+- name: Install EPEL | Package install | RHEL 7
   yum_repository:
     name: epel
     description: EPEL
@@ -16,9 +13,8 @@
     enabled: true
     gpgkey: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-{{ ansible_distribution_major_version }}
   when:
-    - ansible_os_family == "RedHat"
+    - ansible_distribution == "RedHat"
     - ansible_distribution_major_version == "7"
-
 
 - name: Install Redis | Package install
   package:
@@ -31,7 +27,6 @@
 # and --supervised systemd is not supplied on Exec start
 # change the type to "notify".
 # On Ubuntu 22.04, redis is configured with the correct type "notify"
-
 - name: Add SystemD override | Package install | Ubuntu 20.04
   block:
 
