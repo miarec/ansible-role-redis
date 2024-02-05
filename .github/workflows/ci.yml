@@ -5,6 +5,7 @@ name: Ansible role testing
   push:
     branches:
       - master
+      - 20240202-extend-os-support
     paths-ignore:
       - '**.md'
 
@@ -22,7 +23,6 @@ jobs:
 
   molecule-source:
     name: molecule(source)
-    # needs: lint
     runs-on: ubuntu-20.04
     strategy:
       matrix:
@@ -30,7 +30,16 @@ jobs:
           - ubuntu2004
           - ubuntu2204
           - centos7
-        version: ['5.0.10']
+          - rockylinux8
+          - rockylinux9
+          - rhel7
+          - rhel8
+          - rhel9
+        version:
+          - '5.6.0'
+          - '6.2.18'
+          - '6.4.2'
+          - '7.2.4'
 
     steps:
       - name: Check out the Repository
@@ -57,7 +66,6 @@ jobs:
 
   molecule-package:
     name: molecule(package)
-    # needs: lint
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
@@ -66,6 +74,11 @@ jobs:
           - ubuntu2004
           - ubuntu2204
           - centos7
+          - rockylinux8
+          - rockylinux9
+          - rhel7
+          - rhel8
+          - rhel9
 
     steps:
       - name: Check out the Repository
