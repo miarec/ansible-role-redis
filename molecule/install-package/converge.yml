@@ -13,6 +13,9 @@
     # UBI appstream repository does not inclued a redis package
     # Install Centos appstream repository for testing
     - name: Install Addtional Repositories | RHEL8+
+      when:
+        - ansible_distribution == "RedHat"
+        - ansible_distribution_major_version >= "8"
       block:
 
       - set_fact:
@@ -20,7 +23,6 @@
             - name: appstream
               url: http://mirror.centos.org/centos/8-stream/AppStream/x86_64/os/
               gpg: http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
-
         when: ansible_distribution_major_version == "8"
 
       - set_fact:
@@ -28,7 +30,6 @@
             - name: appstream
               url: https://mirror.stream.centos.org/9-stream/AppStream/x86_64/os/
               gpg: http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
-
         when: ansible_distribution_major_version == "9"
 
       - name: Add appstream Repository | RHEL 8+
@@ -41,11 +42,6 @@
         with_items: "{{ _tmp_repos }}"
         loop_control:
           label: "{{ item.name }}"
-
-      when:
-        - ansible_distribution == "RedHat"
-        - ansible_distribution_major_version >= "8"
-
 
     - name: Install prerequisites
       block:

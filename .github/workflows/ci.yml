@@ -9,16 +9,16 @@ name: Ansible role testing
       - '**.md'
 
 jobs:
-  # lint:
-  #   name: lint
-  #   runs-on: ubuntu-latest
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #     - name: Check out the repository
-  #       uses: actions/checkout@v4
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
 
-  #     - name: Run ansible-lint
-  #       uses: ansible/ansible-lint-action@v6
+      - name: Run ansible-lint
+        uses: ansible/ansible-lint-action@v6
 
   molecule-source:
     name: molecule(source)
