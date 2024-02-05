@@ -22,7 +22,16 @@
           #   - name: perl-IPC-Run
           #     repo: powertools
 
-        # when: ansible_distribution_major_version == "8"
+        when: ansible_distribution_major_version == "8"
+
+      - set_fact:
+          _tmp_repos:
+            - name: appstream
+              url: https://mirror.stream.centos.org/9-stream/AppStream/x86_64/os/
+              gpg: http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
+
+        when: ansible_distribution_major_version == "9"
+
 
       - name: Add Temporary Repository | RHEL 8
         yum_repository:
@@ -37,7 +46,7 @@
 
       when:
         - ansible_distribution == "RedHat"
-        - ansible_distribution_major_version == "8"
+        # - ansible_distribution_major_version == "8"
 
     - name: Install prerequisites
       block:
