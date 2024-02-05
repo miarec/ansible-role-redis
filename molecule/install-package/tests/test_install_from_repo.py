@@ -66,8 +66,11 @@ def test_service(host):
 
 
 def test_socket(host):
+    # sockets = [
+    #     "tcp://0.0.0.0:6379"
+    # ]
     sockets = [
-        "tcp://0.0.0.0:6379"
+        "tcp://127.0.0.1:6379"
     ]
     for socket in sockets:
         s = host.socket(socket)
