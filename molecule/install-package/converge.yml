@@ -7,6 +7,38 @@
     - set_fact:
         redis_install_from_source: false
 
+    - name: RHEL 8 dependencies
+      block:
+      # RHEL 8, redis package is in appstream repo, https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/package_manifest/appstream-repository
+      # UBI appstream does not inclued a redis package
+      # Install Centos appstream
+      - set_fact:
+          _tmp_repos:
+            - name: appstream
+              url: http://mirror.centos.org/centos/8-stream/AppStream/x86_64/os/
+              gpg: http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-Official
+
+          # _tmp_packages:
+          #   - name: perl-IPC-Run
+          #     repo: powertools
+
+        # when: ansible_distribution_major_version == "8"
+
+      - name: Add Temporary Repository | RHEL 8
+        yum_repository:
+            name: "{{ item.name }}"
+            description: "Centos {{ ansible_distribution_major_version }} - {{ item.name }}"
+            baseurl: "{{ item.url }}"
+            enabled: true
+            gpgkey: "{{ item.gpg }}"
+        with_items: "{{ _tmp_repos }}"
+        loop_control:
+          label: "{{ item.name }}"
+
+      when:
+        - ansible_distribution == "RedHat"
+        - ansible_distribution_major_version == "8"
+
     - name: Install prerequisites
       block:
         - name: Update apt cache

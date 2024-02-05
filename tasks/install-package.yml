@@ -1,22 +1,23 @@
 ---
-# epel-release was removed from redis_package_dependencies in RedHat.yml, this will likely change
+# epel-release install shoudl be reviewed,   i dont like this
+# epel may not be needed on rocky 8 or 9
 - name: Install package dependencies for Redis | Package install
   package:
     name: "{{ item }}"
     state: present
   with_items: "{{ redis_package_dependencies }}"
+  when: ansible_distribution != "RedHat"
 
-# Verify this is needed on all RHEL install
-# Right now this would be installed on Centos adn Rocky this way, probably do not want that
-- name: Install EPEL | RHEL
+- name: Install EPEL | RHEL7
   yum_repository:
     name: epel
     description: EPEL
     baseurl: https://dl.fedoraproject.org/pub/epel/{{ ansible_distribution_major_version }}/x86_64/
     enabled: true
     gpgkey: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-{{ ansible_distribution_major_version }}
-  when: ansible_os_family == "RedHat"
-
+  when:
+    - ansible_os_family == "RedHat"
+    - ansible_distribution_major_version == "7"
 
 
 - name: Install Redis | Package install
