@@ -13,7 +13,13 @@ def test_directories(host):
             "/var/log/redis",
             "/var/lib/redis"
         ]
-    if host.system_info.distribution == "centos":
+    # if host.system_info.distribution == "centos":
+    #     dirs = [
+    #         "/var/run/redis",
+    #         "/var/log/redis",
+    #         "/var/lib/redis"
+    #     ]
+    else:
         dirs = [
             "/var/run/redis",
             "/var/log/redis",
@@ -31,12 +37,16 @@ def test_files(host):
             "/etc/redis/redis.conf",
             "/var/log/redis/redis.log"
         ]
-    if host.system_info.distribution == "centos":
+    # if host.system_info.distribution == "centos":
+    #     files = [
+    #         "/etc/redis.conf",
+    #         "/var/log/redis/redis.log"
+    #     ]
+    else:
         files = [
             "/etc/redis.conf",
             "/var/log/redis/redis.log"
         ]
-
     for file in files:
         f = host.file(file)
         assert f.exists
@@ -46,7 +56,9 @@ def test_files(host):
 def test_service(host):
     if host.system_info.distribution == "ubuntu":
         s = host.service("redis-server")
-    if host.system_info.distribution == "centos":
+    # if host.system_info.distribution == "centos":
+    #     s = host.service("redis")
+    else:
         s = host.service("redis")
 
     assert s.is_enabled
