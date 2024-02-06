@@ -40,13 +40,21 @@ jobs:
           - '5.0.14'
           - '6.2.9'
           - '7.0.12'
+        # systemd-devel is required for newer installs, package is not available on UBI 7,
+        # there is a mismatch in the systemd and sytemd-devel version from CentOS repos
+        # this pacakage can be installed on actual RHEL servers from `rhel-7-server-rpms`
+        exclude:
+          - distro: rhel7
+            version: '6.2.9'
+          - distro: rhel7
+            version: '7.0.12'
 
     steps:
       - name: Check out the Repository
         uses: actions/checkout@v4
 
       - name: Set up Python3
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.x'
 
@@ -85,7 +93,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Python3
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.x'
 
