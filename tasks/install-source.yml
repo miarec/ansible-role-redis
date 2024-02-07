@@ -27,8 +27,9 @@
   file:
     path: "{{ redis_install_dir }}"
     state: directory
-    mode: 0755
     owner: "{{ redis_user }}"
+    group: "{{ redis_group }}"
+    mode: 0755
 
 # Download and Extract Source files
 
@@ -66,7 +67,10 @@
     ignoreerrors: true
 
 - name: Compile Redis | Source install
-  shell: umask 0022 && make -j{{ ansible_processor_cores | default(1) + 1 }}{{ ' BUILD_TLS=yes' if redis_make_tls | bool else '' }}
+  shell: |
+    umask 0022 && make -j{{ ansible_processor_cores | default(1) + 1 }} \
+    {{ 'BUILD_WITH_SYSTEMD=yes USE_SYSTEMD=yes' if _redis_major_version | int >= 6 else '' }} \
+    {{ 'BUILD_TLS=yes' if redis_make_tls | bool else '' }}
   args:
     chdir: "{{ redis_download_dir }}/redis-{{ redis_version }}"
     creates: "{{ redis_download_dir }}/redis-{{ redis_version }}/src/redis-server"
@@ -75,6 +79,7 @@
   shell: umask 0022 && make PREFIX={{ redis_install_dir }} install
   args:
     chdir: "{{ redis_download_dir }}/redis-{{ redis_version }}"
+    creates: "{{ redis_install_dir }}/bin/redis-server"
 
 - name: Register Redis binaries | Source install
   command: ls -1 {{ redis_install_dir }}/bin
@@ -88,18 +93,15 @@
     link: "/usr/bin/{{ item }}"
   with_items: "{{ _redis_binaries.stdout_lines }}"
 
-# Setup SystemD service
-- name: Create Redis Systemd service | Source Install
+# Setup systemd service
+- name: Create Redis systemd service | Source Install
   template:
     src: redis-server.service.j2
     dest: /etc/systemd/system/{{ redis_service_name }}.service
+    owner: "{{ redis_user }}"
+    group: "{{ redis_group }}"
     mode: 0644
-  register: _systemd_service
-
-- name: Update systemd | Source Install
-  command: systemctl daemon-reload
-  become: true
-  when: _systemd_service.changed
+  notify: Reload systemd
 
 # Cleanup Source Files
 - name: Clean up the source files | Source Install

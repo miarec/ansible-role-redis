@@ -1,13 +1,25 @@
 ---
-- name: Install package dependencies for Redis | Package install
+- name: Install EPEL | Package install | CentOS 7
   package:
-    name: "{{ item }}"
+    name: epel-release
     state: present
-  with_items: "{{ redis_package_dependencies }}"
+  when: ansible_distribution == "CentOS"
+
+- name: Install EPEL | Package install | RHEL 7
+  yum_repository:
+    name: epel
+    description: EPEL
+    baseurl: https://dl.fedoraproject.org/pub/epel/{{ ansible_distribution_major_version }}/x86_64/
+    enabled: true
+    gpgkey: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-{{ ansible_distribution_major_version }}
+  when:
+    - ansible_distribution == "RedHat"
+    - ansible_distribution_major_version == "7"
 
 - name: Install Redis | Package install
   package:
     name: redis
+    update_cache: true
   register: _redis_repo_install
 
 
@@ -16,28 +28,28 @@
 # and --supervised systemd is not supplied on Exec start
 # change the type to "notify".
 # On Ubuntu 22.04, redis is configured with the correct type "notify"
-
-- name: Add SystemD override | Package install | Ubuntu 20.04
-  block:
-
-  - name: Create override directory | Package install | Ubuntu 20.04
-    file:
-      state: directory
-      path: /etc/systemd/system/redis-server.service.d/
-      owner: "{{ redis_user }}"
-      group: "{{ redis_group }}"
-      mode: 0740
-
-  - name: Add Override file | Package install | Ubuntu 20.04
-    copy:
-      dest: /etc/systemd/system/redis-server.service.d/override.conf
-      content: |
-          [Service]
-          Type=notify
-    register: _systemd_override
-
-  - name: Reload systemd | Package install | Ubuntu 20.04
-    command: systemctl daemon-reload
-    when: _systemd_override.changed
-
+- name: Add systemd override | Package install | Ubuntu 20.04
   when: ansible_distribution_version == "20.04"
+  block:
+    - name: Create directory | systemd override | Package install | Ubuntu 20.04
+      file:
+        state: directory
+        path: /etc/systemd/system/redis-server.service.d/
+        owner: "{{ redis_user }}"
+        group: "{{ redis_group }}"
+        mode: 0740
+
+    - name: Add file | systemd override | Package install | Ubuntu 20.04
+      copy:
+        dest: /etc/systemd/system/redis-server.service.d/override.conf
+        content: |
+            [Service]
+            Type=notify
+        owner: "{{ redis_user }}"
+        group: "{{ redis_group }}"
+        mode: 0644
+      register: _systemd_override
+      notify: Reload systemd
+
+    - name: Reload systemd | systemd override | | Package install | Ubuntu 20.04
+      meta: flush_handlers

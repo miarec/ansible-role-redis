@@ -9,35 +9,65 @@ name: Ansible role testing
       - '**.md'
 
 jobs:
-  # lint:
-  #   name: lint
-  #   runs-on: ubuntu-latest
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #     - name: Check out the repository
-  #       uses: actions/checkout@v4
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
 
-  #     - name: Run ansible-lint
-  #       uses: ansible/ansible-lint-action@v6
+      - name: Run ansible-lint
+        uses: ansible/ansible-lint-action@v6
 
   molecule-source:
     name: molecule(source)
-    # needs: lint
     runs-on: ubuntu-20.04
     strategy:
+      fail-fast: false
       matrix:
         distro:
           - ubuntu2004
           - ubuntu2204
           - centos7
-        version: ['5.0.10']
+          - rockylinux8
+          - rockylinux9
+          - rhel7
+          - rhel8
+          - rhel9
+        version:
+          - '5.0.14'
+          - '6.0.20'
+          - '6.2.14'
+          - '7.0.15'
+          - '7.2.4'
+
+
+        exclude:
+          # version 6.0 introduced requirement for newer compiler that is not available on centos7
+          # requirement was walked back in later versions
+          # https://github.com/redis/redis/issues/7174
+          - distro: centos7
+            version: '6.0.20'
+
+          # systemd-devel is required for newer installs, package is not available on UBI 7,
+          # Also, there is a mismatch in the systemd and sytemd-devel version from CentOS repos
+          # this pacakage can be installed on actual RHEL servers from `rhel-7-server-rpms`
+          - distro: rhel7
+            version: '6.0.20'
+          - distro: rhel7
+            version: '6.2.14'
+          - distro: rhel7
+            version: '7.0.15'
+          - distro: rhel7
+            version: '7.2.4'
 
     steps:
       - name: Check out the Repository
         uses: actions/checkout@v4
 
       - name: Set up Python3
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.x'
 
@@ -57,7 +87,6 @@ jobs:
 
   molecule-package:
     name: molecule(package)
-    # needs: lint
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
@@ -66,13 +95,18 @@ jobs:
           - ubuntu2004
           - ubuntu2204
           - centos7
+          - rockylinux8
+          - rockylinux9
+          - rhel7
+          - rhel8
+          - rhel9
 
     steps:
       - name: Check out the Repository
         uses: actions/checkout@v4
 
       - name: Set up Python3
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.x'
 

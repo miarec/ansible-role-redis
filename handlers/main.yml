@@ -4,3 +4,7 @@
     name: "{{ redis_service_name }}"
     state: restarted
   become: true
+
+- name: Reload systemd
+  systemd_service:
+    daemon_reload: true

@@ -10,7 +10,7 @@ For a full list of variables, see [defaults/main.yml](./defaults/main.yml)
 
  - `redis_install_from_source` when true, Redis will be compilied from source, default `true`
  - `redis_force_install` when true, Redis will be installed and configured, even if redis is already installed. default = `false`
-  > **_NOTE:_** if redis configuration needs to be updated, set `redis_forec_install` = `true`
+  > **_NOTE:_** if redis configuration needs to be updated, set `redis_force_install` = `true`
 
 ### `install from source` variables
 
