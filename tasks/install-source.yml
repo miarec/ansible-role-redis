@@ -67,7 +67,7 @@
     ignoreerrors: true
 
 - name: Compile Redis | Source install
-  shell: umask 0022 && make -j{{ ansible_processor_cores | default(1) + 1 }} BUILD_WITH_SYSTEMD=yes USE_SYSTEMD=yes{{ ' BUILD_TLS=yes' if redis_make_tls | bool else '' }}
+  shell: umask 0022 && make -j{{ ansible_processor_cores | default(1) + 1 }}{{ ' BUILD_WITH_SYSTEMD=yes USE_SYSTEMD=yes' if _redis_major_version|int >= 6 else '' }}{{ ' BUILD_TLS=yes' if redis_make_tls | bool else '' }}
   args:
     chdir: "{{ redis_download_dir }}/redis-{{ redis_version }}"
     creates: "{{ redis_download_dir }}/redis-{{ redis_version }}/src/redis-server"

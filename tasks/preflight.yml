@@ -1,10 +1,10 @@
 ---
-- name: Include OS specific vars.
-  include_vars: "{{ item }}"
-  with_first_found:
-    - "../vars/{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
-    - "../vars/{{ ansible_distribution }}.yml"
-    - "../vars/{{ ansible_os_family }}.yml"
+# - name: Include OS specific vars.
+#   include_vars: "{{ item }}"
+#   with_first_found:
+#     - "../vars/{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
+#     - "../vars/{{ ansible_distribution }}.yml"
+#     - "../vars/{{ ansible_os_family }}.yml"
 
 # Check for Variables
 - name: Check for Redis Checksum variable.
@@ -16,9 +16,10 @@
     - redis_version not in redis_checksums and redis_verify_checksum
     - redis_install_from_source
 
-- name: Set Redis major version
+- name: Set Redis versions
   set_fact:
     _redis_major_version: "{{ redis_version.split('.')[0] }}"
+    _redis_major_minor_version: "{{ redis_version | regex_replace('^(\\d+\\.\\d+).*', '\\1') }}"
 
 - name: Check Redis version when TLS is enabled
   fail:
@@ -41,3 +42,10 @@
   failed_when: false
   changed_when: false
   register: _installed_redis
+
+- name: Include OS specific vars.
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "../vars/{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
+    - "../vars/{{ ansible_distribution }}.yml"
+    - "../vars/{{ ansible_os_family }}.yml"

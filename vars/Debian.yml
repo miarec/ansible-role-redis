@@ -1,11 +1,16 @@
 ---
 # OS Specific variables
 
+# I want to see if i can improve this a little
+
 ## Source install variables
 redis_source_dependencies:
   - gcc
   - make
   - libc6-dev
+  # - libsystemd-dev
+  - "{{ 'libsystemd-dev' if _redis_major_version|int >= 6 else 'gcc' }}"
+  - "{{ 'pkg-config' if _redis_major_minor_version == '6.0' else 'gcc' }}"   # this is only needed for 6.0
 
 ## Pacakage install variables
 redis_service_name: "{% if redis_install_from_source %}redis_{{ redis_port }}{% else %}redis-server{% endif %}"

@@ -5,7 +5,7 @@ name: Ansible role testing
   push:
     branches:
       - master
-      - 20240202-extend-os-support
+      # - 20240202-extend-os-support
     paths-ignore:
       - '**.md'
 
@@ -38,14 +38,26 @@ jobs:
           - rhel9
         version:
           - '5.0.14'
-          - '6.2.9'
+          - '6.0.20'
+          - '6.2.13'
           - '7.0.12'
-        # systemd-devel is required for newer installs, package is not available on UBI 7,
-        # there is a mismatch in the systemd and sytemd-devel version from CentOS repos
-        # this pacakage can be installed on actual RHEL servers from `rhel-7-server-rpms`
+          # - '7.2.4'  # support for 7.2 hasnt been added yet
+
+
         exclude:
+          # version 6.0 introduced requirement for newer compiler that is not available on centos7
+          # requirement was walked back in later versions
+          # https://github.com/redis/redis/issues/7174
+          - distro: centos7
+            version: '6.0.20'
+
+          # systemd-devel is required for newer installs, package is not available on UBI 7,
+          # Also, there is a mismatch in the systemd and sytemd-devel version from CentOS repos
+          # this pacakage can be installed on actual RHEL servers from `rhel-7-server-rpms`
           - distro: rhel7
-            version: '6.2.9'
+            version: '6.0.20'
+          - distro: rhel7
+            version: '6.2.13'
           - distro: rhel7
             version: '7.0.12'
 

@@ -27,7 +27,7 @@ provisioner:
   playbooks:
     converge: ${MOLECULE_PLAYBOOK:-converge.yml}
   env:
-    REDIS_VERSION: ${MOLECULE_REDIS_VERSION:-'5.0.10'}
+    REDIS_VERSION: ${MOLECULE_REDIS_VERSION:-'5.0.14'}
 verifier:
   name: testinfra
   options:
