@@ -19,6 +19,7 @@
 - name: Install Redis | Package install
   package:
     name: redis
+    update_cache: true
   register: _redis_repo_install
 
 
