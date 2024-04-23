@@ -6,5 +6,5 @@
   become: true
 
 - name: Reload systemd
-  systemd_service:
+  systemd:
     daemon_reload: true
