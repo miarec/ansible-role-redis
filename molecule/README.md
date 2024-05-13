@@ -25,6 +25,7 @@ MOLECULE_DISTRO=centos7 MOLECULE_REDIS_VERSION=6.2.13 molecule test
     - `rhel8`
     - `rhel9`
  - `MOLECULE_REDIS_VERSION` defines variable `redis_version`, default `5.0.10`
+ - `MOLECULE_ANSIBLE_VERBOSITY` 0-3 used for troubleshooting, will set verbosity of ansible output, same as `-vvv`, default `0`
 
 
 ## Scenario - `install-package`
