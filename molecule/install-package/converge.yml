@@ -4,7 +4,8 @@
   become: true
 
   pre_tasks:
-    - set_fact:
+    - name: Define install variables
+      set_fact:
         redis_install_from_source: false
 
     - name: Install prerequisites
