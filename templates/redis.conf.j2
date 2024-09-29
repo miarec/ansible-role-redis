@@ -3,6 +3,7 @@
 # General
 supervised systemd
 daemonize no
+protected-mode {{ 'yes' if redis_protected_mode else 'no' }}
 dir {{ redis_dir }}
 {% if redis_make_tls|bool %}
 port 0

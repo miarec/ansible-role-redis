@@ -27,6 +27,7 @@ redis_databases: 16
 redis_password: false
 redis_bind: false
 redis_port: 6379
+redis_protected_mode: false
 
 redis_tcp_backlog: 511
 redis_tcp_keepalive: 1
