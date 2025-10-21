@@ -5,7 +5,7 @@ redis_install_from_source: true
 redis_force_install: false
 
 # Install from Source
-redis_version: 5.0.14
+redis_version: 7.0.15
 
 redis_user: redis
 redis_group: "{{ redis_user }}"

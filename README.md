@@ -14,7 +14,7 @@ For a full list of variables, see [defaults/main.yml](./defaults/main.yml)
 
 ### `install from source` variables
 
- - `redis_version` version of Redis to install, default = `5.0.10`
+ - `redis_version` version of Redis to install, default = `7.0.15`
  - `redis_user` linux user for redis service to be ran ad, default = `redis`
  - `redis_group`linux group linux user belongs to, default = `redis`
 
@@ -69,7 +69,7 @@ available only for versions >= 6 (require OpenSSL development libraries)
   pre_tasks:
     - set_fact:
         redis_install_from_source: true
-        redis_version: 5.0.10
+        redis_version: 7.0.15
   become: true
   roles:
     - role: 'ansible-role-redis'
@@ -85,7 +85,7 @@ available only for versions >= 6 (require OpenSSL development libraries)
     - set_fact:
         redis_install_from_source: true
         redis_force_install: true
-        redis_version: 5.0.14
+        redis_version: 8.0.4
   become: true
   roles:
     - role: 'ansible-role-redis'
@@ -100,7 +100,7 @@ available only for versions >= 6 (require OpenSSL development libraries)
   pre_tasks:
     - set_fact:
         redis_install_from_source: true
-        redis_version: 6.2.13
+        redis_version: 7.2.4
         redis_make_tls: true
         redis_tls_cert: /etc/pki/tls/redis.crt
         redis_tls_key: /etc/pki/tls/redis.key

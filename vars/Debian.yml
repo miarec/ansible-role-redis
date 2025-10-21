@@ -2,13 +2,20 @@
 # OS Specific variables
 
 ## Source install variables
-redis_source_dependencies:
-  - gcc
-  - make
-  - libc6-dev
-  # This should be `else omit`, but that doesn't quite work, so duplicate gcc
-  - "{{ 'libsystemd-dev' if _redis_major_version | int >= 6 else 'gcc' }}"
-  - "{{ 'pkg-config' if _redis_major_minor_version == '6.0' else 'gcc' }}"   # this is only needed for 6.0
+redis_source_dependencies: >-
+  {{
+    (
+      [
+        'gcc',
+        'g++',
+        'make',
+        'libc6-dev',
+        'pkg-config',
+        'libjemalloc-dev'
+      ]
+      + (['libsystemd-dev'] if _redis_major_version | int >= 6 else [])
+    ) | unique
+  }}
 
 ## Pacakage install variables
 redis_service_name: "{% if redis_install_from_source %}redis_{{ redis_port }}{% else %}redis-server{% endif %}"
