@@ -9,9 +9,9 @@ redis_source_dependencies: >-
         'gcc',
         'gcc-c++',
         'make',
-        ( 'pkgconf-pkg-config' if (ansible_distribution_major_version | int) >= 8 else 'pkgconfig' ),
-        'jemalloc-devel'
+        ( 'pkgconf-pkg-config' if (ansible_distribution_major_version | int) >= 8 else 'pkgconfig' )
       ]
+      + (['jemalloc-devel'] if not (ansible_distribution == 'RedHat' and (ansible_distribution_major_version | int) >= 9) else [])
       + (['systemd-devel'] if _redis_major_version | int >= 6 else [])
       + (['openssl-devel'] if redis_make_tls | bool else [])
     ) | unique
