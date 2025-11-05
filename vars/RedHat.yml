@@ -2,12 +2,20 @@
 # OS Specific variables
 
 ## Source install variables
-redis_source_dependencies:
-  - gcc
-  - make
-  # This should be `else omit`, but that doesn't quite work, so duplicate gcc
-  - "{{ 'systemd-devel' if _redis_major_version | int >= 6 else 'gcc' }}"
-  - "{{ 'openssl-devel' if redis_make_tls | bool else 'gcc' }}"
+redis_source_dependencies: >-
+  {{
+    (
+      [
+        'gcc',
+        'gcc-c++',
+        'make',
+        ( 'pkgconf-pkg-config' if (ansible_distribution_major_version | int) >= 8 else 'pkgconfig' )
+      ]
+      + (['jemalloc-devel'] if not (ansible_distribution == 'RedHat' and (ansible_distribution_major_version | int) >= 9) else [])
+      + (['systemd-devel'] if _redis_major_version | int >= 6 else [])
+      + (['openssl-devel'] if redis_make_tls | bool else [])
+    ) | unique
+  }}
 
 ## Pacakage install variables
 redis_service_name: "{% if redis_install_from_source %}redis_{{ redis_port }}{% else %}redis{% endif %}"
