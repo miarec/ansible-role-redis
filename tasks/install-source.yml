@@ -14,6 +14,11 @@
       vars:
         _epel_release_url: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm"
       block:
+        - name: Ensure EPEL GPG key is installed | Source install | RedHat
+          rpm_key:
+            key: "https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-{{ ansible_distribution_major_version }}"
+            state: present
+
         - name: Install EPEL release (dnf) | Source install | RedHat
           dnf:
             name: "{{ _epel_release_url }}"
