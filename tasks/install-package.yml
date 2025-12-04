@@ -3,18 +3,18 @@
   package:
     name: epel-release
     state: present
-  when: ansible_distribution == "CentOS"
+  when: ansible_facts["distribution"] == "CentOS"
 
 - name: Install EPEL | RedHat 7
   yum_repository:
     name: epel
     description: EPEL
     baseurl: "https://dl.fedoraproject.org/pub/archive/epel/7/x86_64/"
-    gpgkey: "http://download.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-{{ ansible_distribution_major_version }}"
+    gpgkey: "http://download.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-{{ ansible_facts['distribution_major_version'] }}"
     enabled: true
   when:
-    - ansible_distribution == "RedHat"
-    - ansible_distribution_major_version == "7"
+    - ansible_facts["distribution"] == "RedHat"
+    - ansible_facts["distribution_major_version"] == "7"
 
 - name: Install Redis | Package install
   package:
@@ -29,7 +29,7 @@
 # change the type to "notify".
 # On Ubuntu 22.04, redis is configured with the correct type "notify"
 - name: Add systemd override | Package install | Ubuntu 20.04
-  when: ansible_distribution_version == "20.04"
+  when: ansible_facts["distribution_version"] == "20.04"
   block:
     - name: Create directory | systemd override | Package install | Ubuntu 20.04
       file:
@@ -37,7 +37,7 @@
         path: /etc/systemd/system/redis-server.service.d/
         owner: "{{ redis_user }}"
         group: "{{ redis_group }}"
-        mode: 0740
+        mode: "0740"
 
     - name: Add file | systemd override | Package install | Ubuntu 20.04
       copy:
@@ -47,7 +47,7 @@
             Type=notify
         owner: "{{ redis_user }}"
         group: "{{ redis_group }}"
-        mode: 0644
+        mode: "0644"
       register: _systemd_override
       notify: Reload systemd
 

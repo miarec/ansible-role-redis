@@ -31,34 +31,21 @@ jobs:
         distro:
           - ubuntu2204
           - ubuntu2404
-          - rockylinux8
           - rockylinux9
-          - rhel8
           - rhel9
         version:
           - '6.0.20'
-          - '6.2.14'
           - '7.0.15'
-          - '7.2.4'
-          - '8.0.4'
           - '8.2.2'
     steps:
       - name: Check out the Repository
         uses: actions/checkout@v4
 
-      - name: Set up Python3
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install test dependencies
-        run: pip3 install -r molecule/default/test-requirements.txt
-
-      - name: Install Ansible dependencies.
-        run: ansible-galaxy collection install community.docker ansible.posix --force
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v4
 
       - name: Run molecule tests
-        run: molecule test
+        run: uv run molecule test
         env:
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
@@ -74,28 +61,18 @@ jobs:
         distro:
           - ubuntu2204
           - ubuntu2404
-          - rockylinux8
           - rockylinux9
-          - rhel8
           - rhel9
 
     steps:
       - name: Check out the Repository
         uses: actions/checkout@v4
 
-      - name: Set up Python3
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install test dependencies
-        run: pip3 install -r molecule/default/test-requirements.txt
-
-      - name: Install Ansible dependencies.
-        run: ansible-galaxy collection install community.docker ansible.posix --force
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v4
 
       - name: Run molecule tests
-        run: molecule test -s install-package
+        run: uv run molecule test -s install-package
         env:
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'

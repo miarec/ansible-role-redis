@@ -49,3 +49,9 @@ def test_socket(host):
     for socket in sockets:
         s = host.socket(socket)
         assert s.is_listening
+
+
+def test_redis_ping(host):
+    cmd = host.run("/opt/redis/bin/redis-cli PING")
+    assert cmd.rc == 0
+    assert "PONG" in cmd.stdout
