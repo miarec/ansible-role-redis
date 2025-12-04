@@ -13,6 +13,9 @@
     - name: Install EPEL release package from upstream | Source install | RedHat
       vars:
         _epel_release_url: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm"
+      when:
+        - ansible_distribution == "RedHat"
+        - (ansible_distribution_major_version | int) <= 8
       block:
         - name: Ensure EPEL GPG key is installed | Source install | RedHat
           rpm_key:
@@ -30,9 +33,6 @@
             name: "{{ _epel_release_url }}"
             state: present
           when: ansible_pkg_mgr == "yum"
-      when:
-        - ansible_distribution == "RedHat"
-        - (ansible_distribution_major_version | int) <= 8
 
 - name: Install source dependencies for Redis. | Source install
   package:
@@ -63,7 +63,7 @@
     state: directory
     owner: "{{ redis_user }}"
     group: "{{ redis_group }}"
-    mode: 0755
+    mode: "0755"
 
 # Download and Extract Source files
 
@@ -81,7 +81,7 @@
   get_url:
     url: "{{ redis_download_url }}"
     dest: "{{ redis_download_dir }}/redis-{{ redis_version }}.tar.gz"
-    mode: 0600
+    mode: "0600"
     checksum: "{{ redis_checksum | default(omit) }}"
 
 # unarchive must change the permissions of the destination folder when mode parameter is supplied.
@@ -146,7 +146,7 @@
     dest: /etc/systemd/system/{{ redis_service_name }}.service
     owner: "{{ redis_user }}"
     group: "{{ redis_group }}"
-    mode: 0644
+    mode: "0644"
   notify: Reload systemd
 
 # Cleanup Source Files

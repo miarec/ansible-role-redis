@@ -11,7 +11,7 @@
     path: "{{ item }}"
     owner: "{{ redis_user }}"
     group: "{{ redis_group }}"
-    mode: 0740
+    mode: "0740"
   with_items:
     - "{{ redis_logfile | dirname }}"
     - "{{ redis_dir }}"
@@ -22,7 +22,7 @@
     dest: "{{ redis_config_file_name }}"
     owner: "{{ redis_user }}"
     group: "{{ redis_group }}"
-    mode: 0640
+    mode: "0640"
   notify: Restart Redis
 
 - name: Start and enable Redis service. | Configure Redis

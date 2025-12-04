@@ -37,7 +37,7 @@
         path: /etc/systemd/system/redis-server.service.d/
         owner: "{{ redis_user }}"
         group: "{{ redis_group }}"
-        mode: 0740
+        mode: "0740"
 
     - name: Add file | systemd override | Package install | Ubuntu 20.04
       copy:
@@ -47,7 +47,7 @@
             Type=notify
         owner: "{{ redis_user }}"
         group: "{{ redis_group }}"
-        mode: 0644
+        mode: "0644"
       register: _systemd_override
       notify: Reload systemd
 
