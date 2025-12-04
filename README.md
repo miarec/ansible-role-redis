@@ -113,7 +113,6 @@ Available only for versions >= 6 (requires OpenSSL development libraries)
 Install [uv](https://docs.astral.sh/uv/), then run tests:
 
 ```bash
-uv run ansible-galaxy collection install community.docker ansible.posix
 uv run molecule test
 ```
 
@@ -123,7 +122,6 @@ uv run molecule test
 python -m venv .venv
 source .venv/bin/activate
 pip install -r molecule/requirements.txt
-ansible-galaxy collection install community.docker ansible.posix
 molecule test
 ```
 

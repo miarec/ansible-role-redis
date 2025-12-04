@@ -2,37 +2,37 @@
 # Prepare host for installation
 - name: Ensure repositories for source dependencies are available | Source install | RedHat
   when:
-    - ansible_os_family == "RedHat"
+    - ansible_facts["os_family"] == "RedHat"
   block:
     - name: Install EPEL release package from distribution | Source install | RedHat
       package:
         name: epel-release
         state: present
-      when: ansible_distribution | lower in ["centos", "rocky", "almalinux", "oraclelinux"]
+      when: ansible_facts["distribution"] | lower in ["centos", "rocky", "almalinux", "oraclelinux"]
 
     - name: Install EPEL release package from upstream | Source install | RedHat
       vars:
-        _epel_release_url: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm"
+        _epel_release_url: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_facts['distribution_major_version'] }}.noarch.rpm"
       when:
-        - ansible_distribution == "RedHat"
-        - (ansible_distribution_major_version | int) <= 8
+        - ansible_facts["distribution"] == "RedHat"
+        - (ansible_facts["distribution_major_version"] | int) <= 8
       block:
         - name: Ensure EPEL GPG key is installed | Source install | RedHat
           rpm_key:
-            key: "https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-{{ ansible_distribution_major_version }}"
+            key: "https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-{{ ansible_facts['distribution_major_version'] }}"
             state: present
 
         - name: Install EPEL release (dnf) | Source install | RedHat
           dnf:
             name: "{{ _epel_release_url }}"
             state: present
-          when: ansible_pkg_mgr == "dnf"
+          when: ansible_facts["pkg_mgr"] == "dnf"
 
         - name: Install EPEL release (yum) | Source install | RedHat
           yum:
             name: "{{ _epel_release_url }}"
             state: present
-          when: ansible_pkg_mgr == "yum"
+          when: ansible_facts["pkg_mgr"] == "yum"
 
 - name: Install source dependencies for Redis. | Source install
   package:
@@ -114,7 +114,7 @@
 
 - name: Compile Redis | Source install
   shell: |
-    umask 0022 && make -j{{ ansible_processor_cores | default(1) + 1 }} \
+    umask 0022 && make -j{{ ansible_facts["processor_cores"] | default(1) + 1 }} \
     {{ 'BUILD_WITH_SYSTEMD=yes USE_SYSTEMD=yes' if _redis_major_version | int >= 6 else '' }} \
     {{ 'BUILD_TLS=yes' if redis_make_tls | bool else '' }}
   args:

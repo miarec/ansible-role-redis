@@ -22,7 +22,7 @@ ReadOnlyDirectories=/
 ReadWriteDirectories=-{{ redis_dir }}
 ReadWriteDirectories=-{{ redis_logfile|dirname }}
 CapabilityBoundingSet=~CAP_SYS_PTRACE
-{% if ansible_os_family == "Debian" %}
+{% if ansible_facts["os_family"] == "Debian" %}
 MemoryDenyWriteExecute=true
 ProtectKernelModules=true
 ProtectKernelTunables=true

@@ -16,11 +16,6 @@ uv run molecule test                          # source installation (default sce
 uv run molecule test -s install-package       # package installation scenario
 ```
 
-First-time setup requires installing Ansible collections:
-```bash
-uv run ansible-galaxy collection install community.docker ansible.posix --force
-```
-
 Run tests with specific OS/version:
 ```bash
 MOLECULE_DISTRO=rockylinux9 MOLECULE_REDIS_VERSION=8.0.4 uv run molecule test

@@ -49,9 +49,6 @@ jobs:
       - name: Set up uv
         uses: astral-sh/setup-uv@v4
 
-      - name: Install Ansible collections
-        run: uv run ansible-galaxy collection install community.docker ansible.posix
-
       - name: Run molecule tests
         run: uv run molecule test
         env:
@@ -80,9 +77,6 @@ jobs:
 
       - name: Set up uv
         uses: astral-sh/setup-uv@v4
-
-      - name: Install Ansible collections
-        run: uv run ansible-galaxy collection install community.docker ansible.posix
 
       - name: Run molecule tests
         run: uv run molecule test -s install-package
