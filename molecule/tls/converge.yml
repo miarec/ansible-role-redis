@@ -1,0 +1,28 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+
+  pre_tasks:
+    - name: Define Redis variables
+      set_fact:
+        redis_version: "{{ lookup('env', 'REDIS_VERSION') }}"
+        redis_make_tls: true
+        redis_tls_cert: /etc/redis/tls/server.crt
+        redis_tls_key: /etc/redis/tls/server.key
+        redis_tls_ca_cert: /etc/redis/tls/ca.crt
+        redis_tls_auth_clients: true
+
+    - name: Install prerequisites
+      block:
+        - name: Update apt cache
+          when: ansible_facts["os_family"] == "Debian"
+          apt:
+            update_cache: true
+            cache_valid_time: 600
+          changed_when: false
+
+  roles:
+    - role: ansible-role-redis
+      tags:
+        - redis
