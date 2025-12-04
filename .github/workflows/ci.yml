@@ -52,7 +52,7 @@ jobs:
           python-version: '3.12'
 
       - name: Install test dependencies
-        run: pip3 install -r molecule/default/test-requirements.txt
+        run: pip3 install -r molecule/requirements.txt
 
       - name: Install Ansible dependencies.
         run: ansible-galaxy collection install community.docker ansible.posix --force
@@ -89,7 +89,7 @@ jobs:
           python-version: '3.12'
 
       - name: Install test dependencies
-        run: pip3 install -r molecule/default/test-requirements.txt
+        run: pip3 install -r molecule/requirements.txt
 
       - name: Install Ansible dependencies.
         run: ansible-galaxy collection install community.docker ansible.posix --force
