@@ -131,6 +131,7 @@ molecule test
 |----------|-------------|---------|
 | `default` | Install from source | `uv run molecule test` |
 | `install-package` | Install from package | `uv run molecule test -s install-package` |
+| `tls` | Install with TLS support | `uv run molecule test -s tls` |
 
 ### Environment Variables
 
