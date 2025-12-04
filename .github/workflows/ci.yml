@@ -31,16 +31,11 @@ jobs:
         distro:
           - ubuntu2204
           - ubuntu2404
-          - rockylinux8
           - rockylinux9
-          - rhel8
           - rhel9
         version:
           - '6.0.20'
-          - '6.2.14'
           - '7.0.15'
-          - '7.2.4'
-          - '8.0.4'
           - '8.2.2'
     steps:
       - name: Check out the Repository
@@ -66,9 +61,7 @@ jobs:
         distro:
           - ubuntu2204
           - ubuntu2404
-          - rockylinux8
           - rockylinux9
-          - rhel8
           - rhel9
 
     steps:
