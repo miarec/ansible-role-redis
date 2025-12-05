@@ -4,9 +4,14 @@
   become: true
 
   pre_tasks:
-    - name: Set Redis version from environment
+    - name: Define Redis variables
       set_fact:
         redis_version: "{{ lookup('env', 'REDIS_VERSION') }}"
+        redis_make_tls: true
+        redis_tls_cert: /etc/redis/tls/server.crt
+        redis_tls_key: /etc/redis/tls/server.key
+        redis_tls_ca_cert: /etc/redis/tls/ca.crt
+        redis_tls_auth_clients: true
 
     - name: Install prerequisites
       block:
