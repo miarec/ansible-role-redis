@@ -4,7 +4,7 @@ dependency:
 driver:
   name: docker
 platforms:
-  - name: instance
+  - name: ansible-role-redis-default
     image: ghcr.io/miarec/${MOLECULE_DISTRO:-ubuntu2404}-systemd:latest
     command: ${MOLECULE_DOCKER_COMMAND:-"/sbin/init"}
     volumes:
@@ -17,12 +17,12 @@ platforms:
     cgroupns_mode: host
     privileged: true
     pre_build_image: true
+
 provisioner:
   name: ansible
   playbooks:
     converge: ${MOLECULE_PLAYBOOK:-converge.yml}
   env:
-    REDIS_VERSION: ${MOLECULE_REDIS_VERSION:-'7.0.15'}
     ANSIBLE_VERBOSITY: ${MOLECULE_ANSIBLE_VERBOSITY:-0}
     ANSIBLE_ROLES_PATH: ${MOLECULE_PROJECT_DIRECTORY}/../
 verifier:

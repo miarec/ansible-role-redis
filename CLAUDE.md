@@ -3,8 +3,8 @@ This file provides guidance to coding agent when working with code in this repos
 ## Project Overview
 
 Ansible role for installing and configuring Redis on Linux systems. Supports two installation methods:
-- **Source installation** (default): Compiles Redis from source with optional TLS support
-- **Package installation**: Installs from OS package repositories
+- **Package installation** (default): Installs from OS package repositories
+- **Source installation**: Compiles Redis from source with optional TLS support
 
 Supports Ubuntu (22.04, 24.04), Rocky Linux (8, 9), and RHEL (8, 9).
 
@@ -12,8 +12,8 @@ Supports Ubuntu (22.04, 24.04), Rocky Linux (8, 9), and RHEL (8, 9).
 
 Run molecule tests (uses uv for dependency management):
 ```bash
-uv run molecule test                          # source installation (default scenario)
-uv run molecule test -s install-package       # package installation scenario
+uv run molecule test                          # package installation (default scenario)
+uv run molecule test -s install-from-source   # source installation scenario
 ```
 
 Run tests with specific OS/version:

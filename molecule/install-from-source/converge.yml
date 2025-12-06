@@ -4,18 +4,18 @@
   become: true
 
   pre_tasks:
-    - name: Define install variables
+    - name: Set Redis version from environment
       set_fact:
-        redis_install_from_source: false
+        redis_version: "{{ lookup('env', 'REDIS_VERSION') }}"
 
     - name: Install prerequisites
       block:
         - name: Update apt cache
+          when: ansible_facts["os_family"] == "Debian"
           apt:
             update_cache: true
             cache_valid_time: 600
           changed_when: false
-          when: ansible_facts["os_family"] == "Debian"
 
   roles:
     - role: ansible-role-redis

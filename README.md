@@ -20,7 +20,7 @@ For a full list of variables, see [defaults/main.yml](./defaults/main.yml)
 
 ### Installation Variables
 
-- `redis_install_from_source` - when true, Redis will be compiled from source (default: `true`)
+- `redis_install_from_source` - when true, Redis will be compiled from source (default: `false`)
 - `redis_force_install` - when true, Redis will be installed and configured, even if already installed (default: `false`)
   > **Note:** if redis configuration needs to be updated, set `redis_force_install: true`
 
@@ -129,8 +129,8 @@ molecule test
 
 | Scenario | Description | Command |
 |----------|-------------|---------|
-| `default` | Install from source | `uv run molecule test` |
-| `install-package` | Install from package | `uv run molecule test -s install-package` |
+| `default` | Install from package | `uv run molecule test` |
+| `install-from-source` | Install from source | `uv run molecule test -s install-from-source` |
 | `tls` | Install with TLS support | `uv run molecule test -s tls` |
 
 ### Environment Variables
