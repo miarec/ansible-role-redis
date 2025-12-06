@@ -6,7 +6,7 @@
   pre_tasks:
     - name: Define Redis variables
       set_fact:
-        redis_version: "{{ lookup('env', 'REDIS_VERSION') }}"
+        redis_install_from_source: false
         redis_make_tls: true
         redis_tls_cert: /etc/redis/tls/server.crt
         redis_tls_key: /etc/redis/tls/server.key

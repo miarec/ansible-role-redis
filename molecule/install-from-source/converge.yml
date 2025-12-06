@@ -4,8 +4,9 @@
   become: true
 
   pre_tasks:
-    - name: Set Redis version from environment
+    - name: Define install variables
       set_fact:
+        redis_install_from_source: true
         redis_version: "{{ lookup('env', 'REDIS_VERSION') }}"
 
     - name: Install prerequisites
