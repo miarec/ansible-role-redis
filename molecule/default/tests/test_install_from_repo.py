@@ -26,16 +26,19 @@ def test_directories(host):
 
 
 def test_files(host):
-    if host.system_info.distribution == "ubuntu":
-        files = [
-            "/etc/redis/redis.conf",
-            "/var/log/redis/redis.log"
-        ]
+    distro = host.system_info.distribution.lower()
+    release = host.system_info.release
+
+    if distro == "ubuntu" or release.startswith("9"):
+        redis_conf = "/etc/redis/redis.conf"
     else:
-        files = [
-            "/etc/redis.conf",
-            "/var/log/redis/redis.log"
-        ]
+        redis_conf = "/etc/redis.conf"
+
+    files = [
+        redis_conf,
+        "/var/log/redis/redis.log"
+    ]
+
     for file in files:
         f = host.file(file)
         assert f.exists
