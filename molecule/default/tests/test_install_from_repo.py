@@ -44,22 +44,6 @@ def test_files(host):
         assert f.exists
         assert f.is_file
 
-# def test_files(host):
-#     if host.system_info.distribution == "ubuntu":
-#         files = [
-#             "/etc/redis/redis.conf",
-#             "/var/log/redis/redis.log"
-#         ]
-#     else:
-#         files = [
-#             "/etc/redis.conf",
-#             "/var/log/redis/redis.log"
-#         ]
-#     for file in files:
-#         f = host.file(file)
-#         assert f.exists
-#         assert f.is_file
-
 
 def test_service(host):
     if host.system_info.distribution == "ubuntu":

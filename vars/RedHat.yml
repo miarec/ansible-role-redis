@@ -2,21 +2,6 @@
 # OS Specific variables
 
 ## Source install variables
-# redis_source_dependencies: >-
-#   {{
-#     (
-#       [
-#         'gcc',
-#         'gcc-c++',
-#         'make',
-#         ( 'pkgconf-pkg-config' if (ansible_distribution_major_version | int) >= 8 else 'pkgconfig' )
-#       ]
-#       + (['jemalloc-devel'] if not (ansible_distribution == 'RedHat' and (ansible_distribution_major_version | int) >= 9) else [])
-#       + (['systemd-devel'] if _redis_major_version | int >= 6 else [])
-#       + (['openssl-devel'] if redis_make_tls | bool else [])
-#     ) | unique
-#   }}
-
 redis_source_dependencies:
   - gcc
   - gcc-c++
@@ -25,21 +10,6 @@ redis_source_dependencies:
   - jemalloc-devel
   - "{{ 'systemd-devel' if _redis_major_version | int >= 6 else None }}"
   - "{{ 'openssl-devel' if redis_make_tls | bool else None }}"
-
-# redis_source_dependencies: >-
-#   {{
-#     (
-#       [
-#         'gcc',
-#         'gcc-c++',
-#         'make',
-#         ('pkgconf-pkg-config' if (ansible_distribution_major_version | int) >= 8 else 'pkgconfig')
-#       ]
-#       + ['jemalloc-devel']
-#       + (['systemd-devel'] if _redis_major_version | int >= 6 else [])
-#       + (['openssl-devel'] if redis_make_tls | bool else [])
-#     ) | unique
-#   }}
 
 ## Pacakage install variables
 redis_service_name: "{% if redis_install_from_source %}redis_{{ redis_port }}{% else %}redis{% endif %}"
