@@ -10,12 +10,24 @@
         state: present
       when: ansible_facts["distribution"] | lower in ["centos", "rocky", "almalinux", "oraclelinux"]
 
+    # EPEL 7 is end of life and only available from the archive
+    - name: Install EPEL archive repository | Source install | RedHat 7
+      yum_repository:
+        name: epel
+        description: EPEL
+        baseurl: "https://dl.fedoraproject.org/pub/archive/epel/7/x86_64/"
+        gpgkey: "https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7"
+        enabled: true
+      when:
+        - ansible_facts["distribution"] == "RedHat"
+        - ansible_facts["distribution_major_version"] == "7"
+
     - name: Install EPEL release package from upstream | Source install | RedHat
       vars:
         _epel_release_url: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_facts['distribution_major_version'] }}.noarch.rpm"
       when:
         - ansible_facts["distribution"] == "RedHat"
-        - (ansible_facts["distribution_major_version"] | int) <= 8
+        - ansible_facts["distribution_major_version"] == "8"
       block:
         - name: Ensure EPEL GPG key is installed | Source install | RedHat
           rpm_key:
