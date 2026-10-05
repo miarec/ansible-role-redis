@@ -45,6 +45,12 @@ redis_make_tls: false
 redis_tls_cert: /etc/pki/tls/redis.crt
 redis_tls_key: /etc/pki/tls/redis.key
 redis_tls_ca_cert: /etc/pki/tls/redis-ca.crt
+# Local copies of the files above. When a *_src variable is set, the role uploads
+# the file to the matching redis_tls_* path and restarts Redis when the file
+# changed. Leave it empty when the file is already on the host.
+redis_tls_cert_src: ""
+redis_tls_key_src: ""
+redis_tls_ca_cert_src: ""
 redis_tls_auth_clients: false
 # If false, clients will not be forced to provide certificate for authentication
 

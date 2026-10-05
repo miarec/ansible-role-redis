@@ -45,6 +45,7 @@ Available only for versions >= 6 (requires OpenSSL development libraries)
 - `redis_tls_cert` - path to certificate file
 - `redis_tls_key` - path to private key file
 - `redis_tls_ca_cert` - path to CA certificate file
+- `redis_tls_cert_src`, `redis_tls_key_src`, `redis_tls_ca_cert_src` - local copies of the files above (default: empty). When set, the role uploads the file to the matching path, owned by root with mode 0644 for certificates and 0640 for the key (readable by the Redis group), and restarts Redis when the file changed. Leave empty when the file is already on the host
 - `redis_tls_auth_clients` - when true, clients will be required to present certificate signed by same CA (default: `false`)
 
 ### Logging
