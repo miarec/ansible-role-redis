@@ -19,6 +19,6 @@
           changed_when: false
 
   roles:
-    - role: ansible-role-redis
+    - role: "{{ playbook_dir }}/../.." # noqa: role-name[path]
       tags:
         - redis

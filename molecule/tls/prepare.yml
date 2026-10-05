@@ -5,27 +5,13 @@
 
   vars:
     tls_dir: /etc/redis/tls
-    redis_user: redis
-    redis_group: redis
+    tls_src_dir: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/tls"
 
   tasks:
     - name: Install OpenSSL
       package:
         name: openssl
         state: present
-
-    - name: Create Redis group
-      group:
-        name: "{{ redis_group }}"
-        state: present
-
-    - name: Create Redis user
-      user:
-        name: "{{ redis_user }}"
-        group: "{{ redis_group }}"
-        shell: /bin/false
-        system: true
-        create_home: false
 
     - name: Create TLS certificate directory
       file:
@@ -124,13 +110,6 @@
         - "{{ tls_dir }}/client.key"
         - "{{ tls_dir }}/invalid-client.key"
 
-    - name: Set proper permissions on server key (readable by redis user)
-      file:
-        path: "{{ tls_dir }}/server.key"
-        mode: "0640"
-        owner: root
-        group: "{{ redis_group }}"
-
     - name: Set proper permissions on certificates
       file:
         path: "{{ item }}"
@@ -140,3 +119,18 @@
         - "{{ tls_dir }}/server.crt"
         - "{{ tls_dir }}/client.crt"
         - "{{ tls_dir }}/invalid-client.crt"
+
+    # The role uploads these files from the control machine, like the
+    # production playbooks do. Move them off the host, so the test proves it.
+    - name: Fetch the TLS files that the role uploads
+      fetch:
+        src: "{{ tls_dir }}/{{ item }}"
+        dest: "{{ tls_src_dir }}/"
+        flat: true
+      loop: [ca.crt, server.crt, server.key]
+
+    - name: Remove the fetched TLS files from the host
+      file:
+        path: "{{ tls_dir }}/{{ item }}"
+        state: absent
+      loop: [ca.crt, server.crt, server.key]

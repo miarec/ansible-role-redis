@@ -1,0 +1,39 @@
+---
+# Upload the TLS files from the Ansible control machine. A file is uploaded
+# when its redis_tls_*_src variable is set. Leave the variable empty when the
+# file is already on the host, for example when another tool manages it.
+#
+# All files are owned by root. Certificates are world readable (0644). The
+# private key is readable by root and the Redis service group only (0640).
+
+- name: Upload TLS files
+  vars:
+    _redis_tls_files: >-
+      {{
+        [
+          {'src': redis_tls_ca_cert_src, 'dest': redis_tls_ca_cert},
+          {'src': redis_tls_cert_src, 'dest': redis_tls_cert},
+          {'src': redis_tls_key_src, 'dest': redis_tls_key, 'private': true},
+        ] | selectattr('src') | list
+      }}
+  block:
+    - name: Create TLS directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: root
+        group: "{{ redis_group }}"
+        mode: "0750"
+      loop: "{{ _redis_tls_files | map(attribute='dest') | map('dirname') | unique | list }}"
+
+    - name: Upload TLS certificates and private key
+      copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: root
+        group: "{{ redis_group }}"
+        mode: "{{ '0640' if item.private | default(false) | bool else '0644' }}"
+      loop: "{{ _redis_tls_files }}"
+      loop_control:
+        label: "{{ item.src | basename }} -> {{ item.dest }}"
+      notify: Restart Redis

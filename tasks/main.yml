@@ -14,6 +14,12 @@
     - redis_install_from_source
     - _installed_redis.rc != 0 or redis_force_install|bool
 
+# Runs on every play, not only on install, so a renewed certificate reaches the
+# host and restarts Redis. The install tasks above create the Redis group.
+- name: Upload TLS files.
+  include_tasks: tls.yml
+  when: redis_make_tls | bool
+
 - name: Configure Redis.
   include_tasks: configure.yml
   when:
