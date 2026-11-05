@@ -12,12 +12,11 @@
         redis_tls_key: /etc/redis/tls/server.key
         redis_tls_ca_cert: /etc/redis/tls/ca.crt
         redis_tls_auth_clients: true
-        # The role uploads the server files from the control machine (see prepare.yml)
+        # The role creates /etc/redis/tls and uploads the server files from
+        # the control machine (see prepare.yml and molecule.yml).
         redis_tls_cert_src: "{{ tls_src_dir }}/server.crt"
         redis_tls_key_src: "{{ tls_src_dir }}/server.key"
         redis_tls_ca_cert_src: "{{ tls_src_dir }}/ca.crt"
-      vars:
-        tls_src_dir: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/tls"
 
     - name: Install prerequisites
       block:
