@@ -5,6 +5,14 @@
 #
 # All files are owned by root. Certificates are world readable (0644). The
 # private key is readable by root and the Redis service group only (0640).
+#
+# The role sets permissions only on the files it uploads. A file that is
+# already on the host, because its *_src variable is empty, is left as is.
+# A missing parent directory is created as 0755 root:root, regardless of the
+# umask, so the Redis user can traverse it. An existing directory is never
+# changed, because it may be shared with other services, such as /etc/pki/tls
+# or /etc/ssl/private. tls_verify.yml checks afterwards that the Redis user
+# can read every file, uploaded or not.
 
 - name: Upload TLS files
   vars:
@@ -17,14 +25,20 @@
         ] | selectattr('src') | list
       }}
   block:
-    - name: Create TLS directories
+    - name: Check which TLS directories exist
+      stat:
+        path: "{{ item }}"
+      loop: "{{ _redis_tls_files | map(attribute='dest') | map('dirname') | unique | list }}"
+      register: _redis_tls_dirs
+
+    - name: Create missing TLS directories
       file:
         path: "{{ item }}"
         state: directory
         owner: root
-        group: "{{ redis_group }}"
-        mode: "0750"
-      loop: "{{ _redis_tls_files | map(attribute='dest') | map('dirname') | unique | list }}"
+        group: root
+        mode: "0755"
+      loop: "{{ _redis_tls_dirs.results | rejectattr('stat.exists') | map(attribute='item') | list }}"
 
     - name: Upload TLS certificates and private key
       copy:

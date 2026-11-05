@@ -36,7 +36,9 @@ uv run ansible-lint
 **Entry point**: `tasks/main.yml` orchestrates:
 1. `preflight.yml` - OS detection, variable validation
 2. `install-source.yml` or `install-package.yml` - based on `redis_install_from_source`
-3. `configure.yml` - generates config, starts service
+3. `tls_upload.yml` - uploads TLS files from the control machine (when a `redis_tls_*_src` variable is set)
+4. `tls_verify.yml` - fails if the Redis user cannot read a TLS file (when `redis_make_tls` is true)
+5. `configure.yml` - generates config, starts service
 
 **Key variables** (in `defaults/main.yml`):
 - `redis_install_from_source`: true/false for installation method
