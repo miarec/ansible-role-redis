@@ -1,0 +1,20 @@
+---
+# Verify that the Redis user can read the TLS files. A file that Redis cannot
+# open fails the play here, before the configuration is written, instead of
+# failing the service at its next restart.
+#
+# The check runs as redis_user, the identity the systemd unit runs Redis as.
+# runuser applies the user's supplementary groups, as systemd does, so the
+# check also proves the membership in redis_group. `test -r` covers traversal
+# of every directory and read permission on the file itself, for files the
+# role uploaded and files that arrived by other means.
+
+- name: Verify the Redis user can read the TLS files
+  command: runuser -u {{ redis_user | quote }} -- test -r {{ item | quote }}
+  loop:
+    - "{{ redis_tls_ca_cert }}"
+    - "{{ redis_tls_cert }}"
+    - "{{ redis_tls_key }}"
+  loop_control:
+    label: "{{ redis_user }} can read {{ item }}"
+  changed_when: false
