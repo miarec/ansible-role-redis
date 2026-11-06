@@ -41,6 +41,8 @@ For a full list of variables, see [defaults/main.yml](./defaults/main.yml)
 
 Available only for versions >= 6 (requires OpenSSL development libraries)
 
+On RHEL 8 and Rocky Linux 8, the default `redis` package is Redis 5, which has no TLS support. When `redis_tls_enabled` is true, the package install enables the `redis:6` module stream from AppStream first, so the `redis` package resolves to Redis 6.2.
+
 - `redis_tls_enabled` - when true, Redis serves TLS on `redis_port` instead of plain TCP, using the files below. A source install is compiled with TLS support (default: `false`). The old name `redis_make_tls` still works but is deprecated
 - `redis_tls_cert` - path to certificate file
 - `redis_tls_key` - path to private key file
@@ -161,8 +163,6 @@ EL8 ships with Python 3.6 as the system Python. ansible-core 2.17 and later requ
 MOLECULE_DISTRO=rockylinux8 uv run molecule test
 MOLECULE_DISTRO=rhel8 uv run molecule test -s install-from-source
 ```
-
-The `tls` scenario isn't run on EL8. It installs Redis from the OS package, and the EL8 package is Redis 5, which has no TLS support. Use the source install for TLS on EL8.
 
 RHEL 8 reaches end of life in 2029. Once EL8 support is dropped, the `<10.0` pin can go and Ansible can be upgraded.
 
