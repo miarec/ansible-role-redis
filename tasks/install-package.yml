@@ -16,6 +16,19 @@
     - ansible_facts["distribution"] == "RedHat"
     - ansible_facts["distribution_major_version"] == "7"
 
+# The default redis stream on EL8 is Redis 5, which has no TLS support. Enable
+# the redis:6 stream from AppStream, so the redis package below resolves to
+# Redis 6.2, which is built with TLS. The dnf module reports no change once
+# the stream is enabled.
+- name: Enable the redis:6 module stream | Package install | EL8 with TLS
+  dnf:
+    name: "@redis:6"
+    state: present
+  when:
+    - ansible_facts["os_family"] == "RedHat"
+    - ansible_facts["distribution_major_version"] == "8"
+    - redis_tls_enabled | bool
+
 - name: Install Redis | Package install
   package:
     name: redis

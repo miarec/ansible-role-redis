@@ -28,6 +28,8 @@ jobs:
       - name: Run ansible-lint
         run: uv run ansible-lint
 
+  # All distros use ansible 9.x (ansible-core 2.16) pinned in pyproject.toml
+  # to support EL8's Python 3.6 system interpreter for the dnf module.
   molecule-source:
     name: molecule(source)
     runs-on: ubuntu-22.04
@@ -38,6 +40,7 @@ jobs:
           - ubuntu2204
           - ubuntu2404
           - rockylinux9
+          - rhel8
           - rhel9
         version:
           - '6.0.20'
@@ -68,6 +71,7 @@ jobs:
           - ubuntu2204
           - ubuntu2404
           - rockylinux9
+          - rhel8
           - rhel9
 
     steps:
@@ -94,6 +98,7 @@ jobs:
           - ubuntu2204
           - ubuntu2404
           - rockylinux9
+          - rhel8
           - rhel9
 
     steps:
