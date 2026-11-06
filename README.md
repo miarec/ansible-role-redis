@@ -12,7 +12,7 @@ Ansible role to install Redis from source or from package.
 
 ## Requirements
 
-- Ansible >= 9.0
+- Ansible >= 9.0. To manage RHEL 8 or Rocky Linux 8, use Ansible 9.x (ansible-core 2.16), the last version that supports their Python 3.6 system interpreter on managed nodes. See [Testing on EL8](#testing-on-rhel-8--rocky-linux-8).
 
 ## Role Variables
 
@@ -149,4 +149,25 @@ Example with custom distro and version:
 
 ```bash
 MOLECULE_DISTRO=rockylinux9 MOLECULE_REDIS_VERSION=8.2.2 uv run molecule test
+```
+
+### Testing on RHEL 8 / Rocky Linux 8
+
+EL8 ships with Python 3.6 as the system Python. ansible-core 2.17 and later require Python 3.7 or later on managed nodes, so they skip the system interpreter and fall back to a newer Python on the target. The `dnf` module needs the `python3-dnf` bindings, which exist only for the system Python, so every package task then fails with "Could not import the dnf python module".
+
+`pyproject.toml` pins Ansible to 9.x (ansible-core 2.16), the last version that supports Python 3.6 on managed nodes, and caps `requires-python` below 3.13, the newest Python that ansible-core 2.16 runs on. Every distro, including EL8, uses the same test command:
+
+```bash
+MOLECULE_DISTRO=rockylinux8 uv run molecule test
+MOLECULE_DISTRO=rhel8 uv run molecule test -s install-from-source
+```
+
+The `tls` scenario isn't run on EL8. It installs Redis from the OS package, and the EL8 package is Redis 5, which has no TLS support. Use the source install for TLS on EL8.
+
+RHEL 8 reaches end of life in 2029. Once EL8 support is dropped, the `<10.0` pin can go and Ansible can be upgraded.
+
+You'll see this warning, which can be ignored. It's metadata validation; the module code is compatible:
+
+```
+[WARNING]: Collection community.docker does not support Ansible version 2.16.20
 ```

@@ -8,6 +8,8 @@ Ansible role for installing and configuring Redis on Linux systems. Supports two
 
 Supports Ubuntu (22.04, 24.04), Rocky Linux (8, 9), and RHEL (8, 9).
 
+Ansible is pinned to 9.x (ansible-core 2.16) in `pyproject.toml` to support EL8 distros, which ship with Python 3.6. All distros use the same test command. The `tls` scenario doesn't run on EL8, because the EL8 Redis package is Redis 5, which has no TLS support.
+
 ## Testing Commands
 
 Run molecule tests (uses uv for dependency management):
