@@ -14,12 +14,17 @@
     _redis_major_version: "{{ redis_version.split('.')[0] }}"
     _redis_major_minor_version: "{{ redis_version | regex_replace('^(\\d+\\.\\d+).*', '\\1') }}"
 
+- name: Warn when the deprecated redis_make_tls variable is set
+  debug:
+    msg: "redis_make_tls is deprecated and will be removed in a later release. Use redis_tls_enabled instead."
+  when: redis_make_tls is defined
+
 - name: Check Redis version when TLS is enabled
   fail:
-    msg: "When Redis version 6.x.x or higher is required for TLS support"
+    msg: "Redis version 6.x.x or higher is required for TLS support"
   when:
     - _redis_major_version|int < 6
-    - redis_make_tls
+    - redis_tls_enabled | bool
     - redis_install_from_source
 
 # Check Host compatibility
