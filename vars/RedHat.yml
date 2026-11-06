@@ -2,6 +2,7 @@
 # OS Specific variables
 
 ## Source install variables
+# An entry that evaluates to None is skipped by the install task.
 redis_source_dependencies:
   - gcc
   - gcc-c++
