@@ -41,12 +41,12 @@ For a full list of variables, see [defaults/main.yml](./defaults/main.yml)
 
 Available only for versions >= 6 (requires OpenSSL development libraries)
 
-- `redis_make_tls` - when true, Redis will be compiled with TLS support (default: `false`)
+- `redis_tls_enabled` - when true, Redis serves TLS on `redis_port` instead of plain TCP, using the files below. A source install is compiled with TLS support (default: `false`). The old name `redis_make_tls` still works but is deprecated
 - `redis_tls_cert` - path to certificate file
 - `redis_tls_key` - path to private key file
 - `redis_tls_ca_cert` - path to CA certificate file
 - `redis_tls_cert_src`, `redis_tls_key_src`, `redis_tls_ca_cert_src` - local copies of the files above (default: empty). When set, the role uploads the file to the matching path, owned by root with mode 0644 for certificates and 0640 for the key (readable by the Redis group), and restarts Redis when the file changed. A missing parent directory is created as 0755 root:root; an existing directory is left alone. Leave empty when the file is already on the host; the role doesn't change the permissions of a file it didn't upload
-- When `redis_make_tls` is true, the role fails the play if the Redis user cannot read one of the TLS files, before the configuration is written
+- When `redis_tls_enabled` is true, the role fails the play if the Redis user cannot read one of the TLS files, before the configuration is written
 - `redis_tls_auth_clients` - when true, clients will be required to present certificate signed by same CA (default: `false`)
 
 ### Logging
@@ -102,7 +102,7 @@ Available only for versions >= 6 (requires OpenSSL development libraries)
     - role: ansible-role-redis
       redis_install_from_source: true
       redis_version: 7.2.4
-      redis_make_tls: true
+      redis_tls_enabled: true
       redis_tls_cert: /etc/pki/tls/redis.crt
       redis_tls_key: /etc/pki/tls/redis.key
       redis_tls_ca_cert: /etc/pki/tls/redis-ca.crt

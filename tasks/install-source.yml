@@ -46,11 +46,14 @@
             state: present
           when: ansible_facts["pkg_mgr"] == "yum"
 
+# The RedHat lists hold optional entries that evaluate to None. ansible-core
+# 2.19 and later keep that None, and the package module rejects it. `select`
+# drops it, and the empty string that older versions produce.
 - name: Install source dependencies for Redis. | Source install
   package:
     name: "{{ item }}"
     state: present
-  with_items: "{{ redis_source_dependencies }}"
+  with_items: "{{ redis_source_dependencies | select | list }}"
 
 - name: Add Redis group | Source install
   group:
@@ -128,7 +131,7 @@
   shell: |
     umask 0022 && make -j{{ ansible_facts["processor_cores"] | default(1) + 1 }} \
     {{ 'BUILD_WITH_SYSTEMD=yes USE_SYSTEMD=yes' if _redis_major_version | int >= 6 else '' }} \
-    {{ 'BUILD_TLS=yes' if redis_make_tls | bool else '' }}
+    {{ 'BUILD_TLS=yes' if redis_tls_enabled | bool else '' }}
   args:
     chdir: "{{ _extract_dir.path }}/redis-{{ redis_version }}"
     creates: "{{ _extract_dir.path }}/src/redis-server"

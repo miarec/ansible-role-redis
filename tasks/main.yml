@@ -20,13 +20,13 @@
 # on the host is left as is.
 - name: Upload TLS files.
   include_tasks: tls_upload.yml
-  when: redis_make_tls | bool
+  when: redis_tls_enabled | bool
 
 # Runs after the Redis user exists and before the configuration is written,
 # so a failure leaves the host untouched.
 - name: Verify the TLS files are readable.
   include_tasks: tls_verify.yml
-  when: redis_make_tls | bool
+  when: redis_tls_enabled | bool
 
 - name: Configure Redis.
   include_tasks: configure.yml

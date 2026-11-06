@@ -39,9 +39,15 @@ redis_nofile_limit: 16384
 redis_oom_score_adjust: 0
 
 # TLS Settings
-redis_make_tls: false
-# Set this to true to build redis with TLS support
-# available only for versions >= 6 (require OpenSSL development libraries)
+# When true, Redis serves TLS on redis_port instead of plain TCP, with the
+# certificate, key, and CA certificate below. A source install is then compiled
+# with TLS support, which needs Redis 6 or later and the OpenSSL development
+# libraries. The role also uploads the files when the *_src variables are set,
+# and fails the play if the Redis user cannot read them.
+#
+# redis_make_tls is the old name of this variable. It still works, but it is
+# deprecated and will be removed in a later release.
+redis_tls_enabled: "{{ redis_make_tls | default(false) }}"
 redis_tls_cert: /etc/pki/tls/redis.crt
 redis_tls_key: /etc/pki/tls/redis.key
 redis_tls_ca_cert: /etc/pki/tls/redis-ca.crt

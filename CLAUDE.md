@@ -37,14 +37,14 @@ uv run ansible-lint
 1. `preflight.yml` - OS detection, variable validation
 2. `install-source.yml` or `install-package.yml` - based on `redis_install_from_source`
 3. `tls_upload.yml` - uploads TLS files from the control machine (when a `redis_tls_*_src` variable is set)
-4. `tls_verify.yml` - fails if the Redis user cannot read a TLS file (when `redis_make_tls` is true)
+4. `tls_verify.yml` - fails if the Redis user cannot read a TLS file (when `redis_tls_enabled` is true)
 5. `configure.yml` - generates config, starts service
 
 **Key variables** (in `defaults/main.yml`):
 - `redis_install_from_source`: true/false for installation method
 - `redis_force_install`: reinstall even if Redis exists
 - `redis_version`: version to compile from source
-- `redis_make_tls`: enable TLS support (requires OpenSSL dev libs)
+- `redis_tls_enabled`: serve TLS instead of plain TCP; a source install is compiled with TLS support (requires OpenSSL dev libs). `redis_make_tls` is the deprecated old name
 
 **OS-specific variables**: `vars/Debian.yml`, `vars/RedHat.yml` define package names and dependencies
 

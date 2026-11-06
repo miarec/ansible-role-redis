@@ -5,7 +5,7 @@ supervised systemd
 daemonize no
 protected-mode {{ 'yes' if redis_protected_mode else 'no' }}
 dir {{ redis_dir }}
-{% if redis_make_tls|bool %}
+{% if redis_tls_enabled|bool %}
 port 0
 tls-port {{ redis_port }}
 tls-cert-file {{ redis_tls_cert }}
