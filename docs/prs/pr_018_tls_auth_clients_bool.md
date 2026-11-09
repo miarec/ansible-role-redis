@@ -33,4 +33,3 @@ With TLS enabled, the string values `"false"` and `"no"` in `redis_tls_auth_clie
 ## 🔧 Implementation notes
 
 * The fix is in the role so every consumer gets it. ansible-miarec can then drop the `set_fact` that cast the value before calling the role.
-* The `tls` scenario checks the string case by rendering the template on the control machine after converge, instead of adding a second container scenario with client checks turned off.

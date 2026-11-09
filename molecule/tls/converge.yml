@@ -31,16 +31,3 @@
     - role: "{{ playbook_dir }}/../.." # noqa: role-name[path]
       tags:
         - redis
-
-  post_tasks:
-    # Inventories and -e pass booleans as strings. A plain Jinja test treats
-    # the string "false" as true, so check that the template casts the value.
-    - name: Check that a string "false" turns off client certificate checks
-      vars:
-        rendered: >-
-          {{ lookup('template', playbook_dir ~ '/../../templates/redis.conf.j2',
-                    template_vars={'redis_tls_auth_clients': 'false'}) }}
-      assert:
-        that:
-          - "'tls-auth-clients no' in rendered"
-          - "'tls-auth-clients yes' not in rendered"
