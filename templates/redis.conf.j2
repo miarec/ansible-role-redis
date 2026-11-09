@@ -11,7 +11,7 @@ tls-port {{ redis_port }}
 tls-cert-file {{ redis_tls_cert }}
 tls-key-file {{ redis_tls_key }}
 tls-ca-cert-file {{ redis_tls_ca_cert }}
-{% if redis_tls_auth_clients %}
+{% if redis_tls_auth_clients | bool %}
 tls-auth-clients yes
 {% else %}
 tls-auth-clients no
